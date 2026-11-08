@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>kvtiucodd — сайты для кофеен, барбершопов и автосервисов</title>
+<meta name="description" content="Делаю сайты для местного бизнеса: онлайн-запись, калькулятор, цены и статус «открыто». Демо с вашим названием за 2 дня — бесплатно.">
+<meta name="theme-color" content="#0A0918">
+<meta property="og:title" content="kvtiucodd — сайты, после которых вам звонят">
+<meta property="og:description" content="Демо сайта с вашим названием за 2 дня — бесплатно.">
+<meta property="og:image" content="img/coffee.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/coffee.webp" type="image/webp">
+<link rel="preload" as="image" href="img/barber.webp" type="image/webp">
+<link rel="preload" as="image" href="img/auto.webp" type="image/webp">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="page-progress" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="logo" href="#top" aria-label="kvtiucodd — наверх">kvtiucodd<span class="logo-dot" aria-hidden="true"></span></a>
+  <nav class="nav" aria-label="Разделы">
+    <a href="#works" data-jump="1">Работы</a>
+    <a href="#services">Услуги</a>
+    <a href="#inside">Что внутри</a>
+    <a href="#prices">Цены</a>
+  </nav>
+  <a class="btn btn-small" data-wa href="#contact">Написать</a>
+</header>
+
+<main id="top">
+
+  <!-- Сцена 1. 3D-телефон -->
+  <section class="stage" id="works" aria-label="Примеры сайтов">
+    <div class="stage-sticky">
+      <canvas class="scene" aria-hidden="true"></canvas>
+      <img class="fallback" src="img/coffee.webp" alt="Сайт кофейни на экране телефона" width="900" height="1100">
+
+      <div class="panels">
+        <div class="panel panel-hero" data-i="0">
+          <h1>Сайты, после которых вам звонят</h1>
+          <p class="lead">Делаю сайты для кофеен, барбершопов и&nbsp;автосервисов. Пришлите название&nbsp;— через два дня покажу демо с&nbsp;вашими ценами и&nbsp;отзывами. Бесплатно.</p>
+          <div class="actions">
+            <a class="btn" data-wa href="#contact">Получить демо</a>
+            <a class="btn btn-ghost" href="#services">Что я делаю</a>
+          </div>
+          <p class="drag-hint" aria-hidden="true"><i></i>Покрутите телефон</p>
+        </div>
+
+        <div class="panel" data-i="1">
+          <p class="kicker">Кофейня «Зерно»</p>
+          <h2>Гость решает зайти ещё на&nbsp;улице</h2>
+          <p>Меню с&nbsp;ценами, статус «открыто сейчас» и&nbsp;заказ заранее. Кофе готов к&nbsp;приходу.</p>
+        </div>
+
+        <div class="panel" data-i="2">
+          <p class="kicker">Барбершоп «Сталь»</p>
+          <h2>Запись без звонков и&nbsp;переписки</h2>
+          <p>Свободное время видно сразу. Клиент выбирает час в&nbsp;два касания, мастер получает заявку.</p>
+        </div>
+
+        <div class="panel" data-i="3">
+          <p class="kicker">Автосервис QuickMade</p>
+          <h2>Сумма ремонта&nbsp;— до&nbsp;приезда</h2>
+          <p>Клиент отмечает работы и&nbsp;видит цену. Не нужно звонить и&nbsp;спрашивать «сколько будет».</p>
+        </div>
+      </div>
+
+      <div class="stage-progress" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <div class="scroll-hint" aria-hidden="true">Листайте</div>
+    </div>
+  </section>
+
+  <!-- Сцена 2. Фраза + бегущие строки -->
+  <section class="scene-pin manifesto" style="--len:1.9" aria-label="Зачем бизнесу сайт">
+    <div class="pin-inner">
+      <div class="band-tilt" aria-hidden="true">
+        <div class="band-row mf-row-1"><span>Кофейни</span><span>Барбершопы</span><span>Автосервисы</span><span>Салоны красоты</span><span>Шиномонтаж</span><span>Пекарни</span><span>Автомойки</span><span>Студии маникюра</span></div>
+      </div>
+      <div class="wrap">
+        <p class="mf-text" data-lit>Клиент выбирает за&nbsp;три секунды. Не&nbsp;видит цены и&nbsp;не&nbsp;может записаться&nbsp;— уходит к&nbsp;соседу.</p>
+      </div>
+      <div class="band-tilt band-tilt-2" aria-hidden="true">
+        <div class="band-row band-alt mf-row-2"><span>Онлайн-запись</span><span>Калькулятор</span><span>3D</span><span>Отзывы с Карт</span><span>Маршрут</span><span>WhatsApp</span><span>Цены</span><span>Открыто сейчас</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Сцена 3. Услуги: лента вбок -->
+  <section class="services" id="services" aria-label="Услуги">
+    <div class="services-sticky">
+      <div class="wrap services-head">
+        <h2 data-words>Что я делаю</h2>
+        <p data-fade>Всё, чтобы клиент нашёл вас, выбрал и&nbsp;записался. Без звонков.</p>
+      </div>
+
+      <div class="track">
+        <article class="svc spot">
+          <div class="svc-vis v-site" aria-hidden="true">
+            <div class="mini-win"><i></i><i></i><i></i><b class="mw-hero"></b><b class="mw-line"></b><b class="mw-line mw-s"></b><b class="mw-btn"></b></div>
+          </div>
+          <h3>Сайт под ваш бизнес</h3>
+          <p>Цены, адрес, часы работы и&nbsp;отзывы на&nbsp;одной странице. Открывается на&nbsp;любом телефоне.</p>
+          <p class="svc-tag">Тариф «Визитка»</p>
+        </article>
+
+        <article class="svc spot">
+          <div class="svc-vis v-book" aria-hidden="true">
+            <div class="vb-grid"><b class="x">10:00</b><b>11:00</b><b class="x">12:30</b><b>14:00</b><b>15:30</b><b class="on">17:00</b><b class="x">18:30</b><b>20:00</b></div>
+          </div>
+          <h3>Онлайн-запись</h3>
+          <p>Клиент сам выбирает день и&nbsp;время. Заявка приходит вам в&nbsp;Telegram.</p>
+          <p class="svc-tag">Тариф «Сайт с&nbsp;записью»</p>
+        </article>
+
+        <article class="svc spot">
+          <div class="svc-vis v-calc" aria-hidden="true">
+            <div class="vc">
+              <div class="vc-row on"><s></s><b></b><em>1 500 ₽</em></div>
+              <div class="vc-row on"><s></s><b></b><em>900 ₽</em></div>
+              <div class="vc-row"><s></s><b></b><em>1 800 ₽</em></div>
+              <div class="vc-sum"><span>Итого</span><strong>2 400 ₽</strong></div>
+            </div>
+          </div>
+          <h3>Калькулятор стоимости</h3>
+          <p>Клиент отмечает работы и&nbsp;видит сумму. Меньше звонков с&nbsp;вопросом «сколько будет».</p>
+          <p class="svc-tag">Тариф «Сайт с&nbsp;записью»</p>
+        </article>
+
+        <article class="svc spot">
+          <div class="svc-vis v-3d" aria-hidden="true" title="Потяните, чтобы покрутить">
+            <div class="cube"><b class="f1">3D</b><b class="f2">3D</b><b class="f3"></b><b class="f4"></b><b class="f5"></b><b class="f6"></b></div>
+          </div>
+          <h3>3D и&nbsp;анимации</h3>
+          <p>Как на&nbsp;этой странице. Такой сайт запоминают и&nbsp;пересылают друзьям.</p>
+          <p class="svc-tag">Тариф «Сайт с&nbsp;записью»</p>
+        </article>
+
+        <article class="svc spot">
+          <div class="svc-vis v-map" aria-hidden="true">
+            <span class="road r1"></span><span class="road r2"></span>
+            <span class="pin"></span>
+            <span class="map-chip"><b>4,9 ★</b> 312 оценок</span>
+          </div>
+          <h3>Яндекс Карты и&nbsp;отзывы</h3>
+          <p>Рейтинг, отзывы и&nbsp;кнопка «Маршрут». Если точек несколько&nbsp;— покажу все.</p>
+          <p class="svc-tag">Тариф «Под ключ»</p>
+        </article>
+
+        <article class="svc spot">
+          <div class="svc-vis v-launch" aria-hidden="true">
+            <div class="vl">
+              <div class="vl-url"><span>https://</span>ваше-название.ru</div>
+              <div class="vl-bar"><i></i></div>
+              <div class="vl-ok">Сайт опубликован</div>
+            </div>
+          </div>
+          <h3>Запуск и&nbsp;поддержка</h3>
+          <p>Домен, хостинг и&nbsp;правки цен беру на&nbsp;себя. Вам не&nbsp;нужно ни&nbsp;в&nbsp;чём разбираться.</p>
+          <p class="svc-tag">Тариф «Под ключ»</p>
+        </article>
+      </div>
+
+      <div class="wrap svc-foot" aria-hidden="true">
+        <span class="svc-count">1 / 6</span>
+        <span class="svc-bar"><i></i></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Сцена 4. Песочница: детали сайта с физикой -->
+  <section class="play" id="play" aria-label="Песочница">
+    <div class="wrap play-head">
+      <div>
+        <h2 data-words>Потрогайте детали вашего сайта</h2>
+        <p data-fade>Хватайте, бросайте, складывайте. Всё это будет работать у&nbsp;вас.</p>
+      </div>
+      <button class="btn btn-ghost play-shake" type="button">Встряхнуть</button>
+    </div>
+    <div class="play-box" aria-hidden="true">
+      <div class="toy toy-btn">Записаться</div>
+      <div class="toy toy-chip"><b>4,9</b> ★★★★★</div>
+      <div class="toy toy-price">2 400 ₽</div>
+      <div class="toy toy-open"><i></i>Открыто</div>
+      <div class="toy toy-slot">17:00</div>
+      <div class="toy toy-icon"><svg viewBox="0 0 24 24"><path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3.5c0 1.2 1 1.2 1 2.5M12 3.5c0 1.2 1 1.2 1 2.5"/></svg></div>
+      <div class="toy toy-icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/></svg></div>
+      <div class="toy toy-icon"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+      <div class="toy toy-cube">3D</div>
+      <div class="toy toy-wa">WhatsApp</div>
+      <div class="toy toy-route">Маршрут</div>
+      <div class="toy toy-star">★</div>
+      <p class="play-tip">Тяните мышкой или пальцем</p>
+    </div>
+  </section>
+
+  <!-- Сцена 5. Живые демо стопкой -->
+  <section class="scene-pin inside" id="inside" style="--len:3">
+    <div class="pin-inner">
+      <div class="wrap inside-grid">
+        <div class="inside-text">
+          <h2 data-words>Что получит ваш клиент</h2>
+          <p data-fade>Это не картинки. Нажимайте&nbsp;— всё работает так же, как на&nbsp;готовом сайте.</p>
+          <ol class="deck-nav" aria-hidden="true">
+            <li>Онлайн-запись</li>
+            <li>Калькулятор стоимости</li>
+            <li>Открыто или закрыто</li>
+            <li>Рейтинг с&nbsp;Яндекс Карт</li>
+          </ol>
+          <p class="also">Ещё на&nbsp;сайте: адреса с&nbsp;кнопкой «Маршрут», звонок и&nbsp;WhatsApp в&nbsp;одно касание, все точки сети на&nbsp;карте.</p>
+        </div>
+
+        <div class="deck" data-range="0.06,0.9">
+          <article class="card card-book spot">
+            <h3>Онлайн-запись</h3>
+            <p>Занятые часы зачёркнуты, свободные нажимаются.</p>
+            <div class="days" role="group" aria-label="День"></div>
+            <div class="slots" role="group" aria-label="Время"></div>
+            <button class="btn book-btn" type="button" disabled>Выберите время</button>
+            <p class="book-done" aria-live="polite"></p>
+          </article>
+
+          <article class="card card-calc spot">
+            <h3>Калькулятор стоимости</h3>
+            <p>Клиент отмечает работы и&nbsp;сразу видит сумму.</p>
+            <ul class="calc-list">
+              <li><label><input type="checkbox" data-price="1500" checked><span>Замена масла и&nbsp;фильтра</span><b>1 500 ₽</b></label></li>
+              <li><label><input type="checkbox" data-price="900" checked><span>Диагностика подвески</span><b>900 ₽</b></label></li>
+              <li><label><input type="checkbox" data-price="1800"><span>Замена колодок</span><b>1 800 ₽</b></label></li>
+              <li><label><input type="checkbox" data-price="2400"><span>Шиномонтаж R16</span><b>2 400 ₽</b></label></li>
+              <li><label><input type="checkbox" data-price="2500"><span>Заправка кондиционера</span><b>2 500 ₽</b></label></li>
+            </ul>
+            <div class="calc-total"><span>Итого от</span><output class="calc-sum">2 400 ₽</output></div>
+          </article>
+
+          <article class="card card-status spot">
+            <h3>Открыто или закрыто</h3>
+            <p>Клиент видит, работаете ли вы прямо сейчас.</p>
+            <div class="status-big"><span class="status-dot" aria-hidden="true"></span><span class="status-text">Открыто до 22:00</span></div>
+            <p class="status-sub">Кофейня «Зерно», ежедневно 8:00–22:00</p>
+            <p class="status-clock">Сейчас в&nbsp;Москве <b>--:--</b></p>
+          </article>
+
+          <article class="card card-reviews spot">
+            <h3>Рейтинг с&nbsp;Яндекс Карт</h3>
+            <p>Оценки и&nbsp;отзывы подтягиваются из&nbsp;вашей карточки.</p>
+            <div class="rating"><b>4,9</b><span class="stars" aria-label="5 звёзд">★★★★★</span></div>
+            <p class="rating-sub">312 оценок</p>
+            <blockquote>«Записался вечером с&nbsp;телефона, утром уже стоял в&nbsp;боксе. Цена совпала с&nbsp;калькулятором.»</blockquote>
+          </article>
+        </div>
+        <p class="deck-count" aria-hidden="true">1 / 4</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Сцена 5. Как работаем -->
+  <section class="scene-pin process" id="process" style="--len:1.8">
+    <div class="pin-inner">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 data-words>Как это работает</h2>
+        </div>
+        <ol class="steps">
+          <li style="--k:0">
+            <span class="step-n">1</span>
+            <h3>Вы присылаете название</h3>
+            <p>Или ссылку на&nbsp;карточку в&nbsp;Яндекс Картах. Больше ничего не&nbsp;нужно.</p>
+          </li>
+          <li style="--k:.33">
+            <span class="step-n">2</span>
+            <h3>Через два дня&nbsp;— демо</h3>
+            <p>С&nbsp;вашими адресом, часами работы, ценами и&nbsp;отзывами. Смотрите бесплатно.</p>
+          </li>
+          <li style="--k:.66">
+            <span class="step-n">3</span>
+            <h3>Нравится&nbsp;— запускаем</h3>
+            <p>Подключаю домен, размещаю сайт, показываю, как менять цены. Не&nbsp;нравится&nbsp;— просто расходимся.</p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- Сцена 6. Цены -->
+  <section class="scene-pin prices" id="prices" style="--len:2.2">
+    <div class="pin-inner">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 data-words>Цены</h2>
+          <p data-fade>Точную сумму назову после демо. Доплат по&nbsp;ходу не&nbsp;будет.</p>
+          <p class="deck-count deck-count-plans" aria-hidden="true">1 / 3</p>
+        </div>
+        <div class="plans deck" data-range="0.1,0.85">
+          <article class="plan spot">
+            <h3>Визитка</h3>
+            <p class="price">от 15 000 ₽</p>
+            <ul>
+              <li>Одна страница</li>
+              <li>Услуги и&nbsp;цены</li>
+              <li>Звонок и&nbsp;WhatsApp в&nbsp;одно касание</li>
+              <li>Адрес и&nbsp;маршрут</li>
+            </ul>
+            <p class="plan-time">Готово за&nbsp;3 дня</p>
+            <a class="btn btn-ghost" data-wa href="#contact">Обсудить</a>
+          </article>
+          <article class="plan spot plan-main">
+            <p class="plan-badge">Берут чаще всего</p>
+            <h3>Сайт с&nbsp;записью</h3>
+            <p class="price">от 25 000 ₽</p>
+            <ul>
+              <li>Всё из&nbsp;визитки</li>
+              <li>Онлайн-запись по&nbsp;часам</li>
+              <li>Калькулятор стоимости</li>
+              <li>3D и&nbsp;анимации, как на&nbsp;этой странице</li>
+            </ul>
+            <p class="plan-time">Готово за&nbsp;5 дней</p>
+            <a class="btn" data-wa href="#contact">Обсудить</a>
+          </article>
+          <article class="plan spot">
+            <h3>Под ключ</h3>
+            <p class="price">от 40 000 ₽</p>
+            <ul>
+              <li>Всё из&nbsp;«Сайта с&nbsp;записью»</li>
+              <li>Несколько точек на&nbsp;карте</li>
+              <li>Домен и&nbsp;хостинг на&nbsp;год</li>
+              <li>Месяц правок бесплатно</li>
+            </ul>
+            <p class="plan-time">Готово за&nbsp;7 дней</p>
+            <a class="btn btn-ghost" data-wa href="#contact">Обсудить</a>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Сцена 7. Финал -->
+  <section class="scene-pin cta" id="contact" style="--len:1.6">
+    <div class="pin-inner">
+      <div class="wrap">
+        <h2 class="fill">Пришлите название&nbsp;— покажу ваш сайт через два дня</h2>
+        <div class="cta-after">
+          <p>Посмотреть ни&nbsp;к&nbsp;чему не&nbsp;обязывает.</p>
+          <div class="actions">
+            <a class="btn" href="#lead">Оставить заявку</a>
+            <a class="btn btn-ghost" data-wa href="#">WhatsApp</a>
+            <a class="btn btn-ghost" data-tg href="#">Telegram</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Сцена 9. Заявка → Telegram-бот -->
+  <section class="apply" id="lead" aria-labelledby="lead-title">
+    <div class="wrap lead-grid">
+      <div class="lead-text">
+        <h2 id="lead-title" data-words>Оставьте заявку</h2>
+        <p data-fade>Напишите название бизнеса или пришлите ссылку на&nbsp;карточку в&nbsp;Яндекс Картах. Заявка сразу придёт мне в&nbsp;Telegram, отвечу в&nbsp;тот же день.</p>
+        <ul class="lead-points" data-fade>
+          <li>Демо с&nbsp;вашим названием за&nbsp;два дня</li>
+          <li>Бесплатно и&nbsp;ни&nbsp;к&nbsp;чему не&nbsp;обязывает</li>
+        </ul>
+      </div>
+
+      <form class="lead-form spot" data-fade novalidate>
+        <div class="form-body">
+          <label class="field">
+            <span>Имя</span>
+            <input name="name" type="text" required maxlength="100" autocomplete="name">
+          </label>
+          <label class="field">
+            <span>Телефон или Telegram</span>
+            <input name="contact" type="text" required maxlength="100" autocomplete="tel" placeholder="+7 900 000-00-00 или @ник">
+          </label>
+          <fieldset class="field">
+            <legend>Бизнес</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="type" value="Кофейня" checked><span>Кофейня</span></label>
+              <label class="chip"><input type="radio" name="type" value="Барбершоп"><span>Барбершоп</span></label>
+              <label class="chip"><input type="radio" name="type" value="Автосервис"><span>Автосервис</span></label>
+              <label class="chip"><input type="radio" name="type" value="Другое"><span>Другое</span></label>
+            </div>
+          </fieldset>
+          <label class="field">
+            <span>Сообщение</span>
+            <textarea name="message" rows="3" required maxlength="2000" placeholder="Название или ссылка на карточку в Яндекс Картах"></textarea>
+          </label>
+          <label class="consent">
+            <input type="checkbox" name="consent" value="yes" required>
+            <span>Согласен на&nbsp;обработку персональных данных по&nbsp;<a href="privacy.html" target="_blank" rel="noopener">политике</a></span>
+          </label>
+          <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button class="btn form-submit" type="submit">Отправить заявку</button>
+          <p class="form-msg" role="status" aria-live="polite"></p>
+        </div>
+        <div class="form-done" hidden>
+          <p class="form-done-title">Заявка отправлена</p>
+          <p>Скоро напишу вам. Если срочно&nbsp;— WhatsApp или Telegram.</p>
+          <button class="btn btn-ghost form-again" type="button">Отправить ещё одну</button>
+        </div>
+        <div class="form-limit" hidden>
+          <p class="form-done-title">Заявки получены</p>
+          <p>Вы уже отправили две заявки&nbsp;— этого достаточно, я свяжусь с&nbsp;вами. Если срочно, напишите напрямую.</p>
+          <div class="actions">
+            <a class="btn" data-wa href="#">WhatsApp</a>
+            <a class="btn btn-ghost" data-tg href="#">Telegram</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <span>© 2026 kvtiucodd</span>
+    <span class="foot-contacts">
+      <a data-tg href="https://t.me/kvtiucodd">Telegram @kvtiucodd</a>
+      <a data-wa href="https://wa.me/79261408245">WhatsApp +7 926 140-82-45</a>
+    </span>
+    <a href="privacy.html">Политика обработки персональных данных</a>
+    <span>Фото: Unsplash</span>
+  </div>
+</footer>
+
+<div class="dock">
+  <a class="btn" data-wa href="#contact">Написать в&nbsp;WhatsApp</a>
+  <a class="btn btn-ghost" data-tg href="#contact" aria-label="Написать в Telegram">Telegram</a>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script src="script.js"></script>
+<script type="module" src="scene.js"></script>
+</body>
+</html>
