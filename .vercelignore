@@ -1,4 +1,5 @@
 main.py
-.env
-.env.example
+.env*
 README.md
+.git
+__pycache__

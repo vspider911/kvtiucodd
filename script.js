@@ -542,7 +542,9 @@ const CONFIG = {
         const res = await fetch('/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          // русские буквы кодируем как \uXXXX: тело запроса — только ASCII,
+          // иначе Python на Vercel неверно считает его длину и обрезает
+          body: JSON.stringify(data).replace(/[\u007f-￿]/g, ch => '\\u' + ch.charCodeAt(0).toString(16).padStart(4, '0'))
         });
         let out = {};
         try { out = await res.json(); } catch (_) { /* не JSON — сервер без бота */ }
