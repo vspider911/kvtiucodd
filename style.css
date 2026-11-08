@@ -257,7 +257,6 @@ p { text-wrap: pretty; }
 }
 .svc h3 { font-size: 21px; margin: 20px 8px 8px; }
 .svc > p { color: var(--muted); font-size: 15px; margin: 0 8px; }
-.svc .svc-tag { margin-top: 14px; color: var(--amber); font-weight: 700; font-size: 14px; }
 .svc-vis {
   position: relative; height: 210px; overflow: hidden;
   display: grid; place-items: center;
@@ -417,7 +416,6 @@ p { text-wrap: pretty; }
   .deck > .card > p:first-of-type { display: none; }
   .slot { min-height: 40px; }
 }
-.deck-count-plans { margin-top: 14px !important; }
 
 .card {
   min-width: 0;
@@ -532,51 +530,6 @@ p { text-wrap: pretty; }
   .step-n { font-size: 30px; margin-bottom: 8px; }
   .steps h3 { margin-bottom: 6px; }
   .steps p { font-size: 15px; }
-}
-
-/* ---------- Сцена 6: цены ---------- */
-.plan {
-  display: flex; flex-direction: column; gap: 14px;
-  padding: 28px 26px;
-  border: 1px solid var(--line); border-radius: var(--radius);
-  background: var(--bg-2);
-}
-.plan h3 { font-size: 22px; }
-.plan-main { border-color: var(--amber); background: linear-gradient(180deg, #1F1A58, var(--bg-2) 70%); }
-.plan-badge {
-  align-self: flex-start; padding: 5px 9px; border-radius: var(--radius);
-  background: var(--amber); color: var(--amber-ink); font-weight: 700; font-size: 13px;
-}
-.price { font: 700 32px/1.1 Unbounded, sans-serif; }
-.plan ul { list-style: none; display: grid; gap: 9px; color: #D3D1F0; font-size: 15px; }
-.plan li { display: flex; gap: 10px; }
-.plan li::before {
-  content: ""; flex: 0 0 auto; width: 8px; height: 5px; margin-top: 7px;
-  border: solid var(--amber); border-width: 0 0 2px 2px; transform: rotate(-45deg);
-}
-.plan-time { color: var(--muted); font-size: 14px; margin-top: auto; }
-.plan .btn { width: 100%; }
-
-/* компьютер: веер из стопки */
-@media (min-width: 900px) {
-  .plans.deck {
-    --fp: clamp(0, calc((var(--sp, 1) - .04) / .5), 1);
-    grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: stretch;
-  }
-  .plans.deck > * {
-    --f: calc(1 - var(--fp));
-    grid-area: auto; align-self: stretch;
-    transform: translateX(calc(var(--f) * var(--fx, 0%))) translateY(calc(var(--f) * 60px)) rotate(calc(var(--f) * var(--fr, 0deg)));
-    box-shadow: 0 30px 60px -20px rgba(5, 4, 20, calc(var(--f) * .8));
-  }
-  .plans.deck > *::after { display: none; }
-  .plans.deck > :nth-child(1) { --fx: 104%; --fr: -9deg; }
-  .plans.deck > :nth-child(3) { --fx: -104%; --fr: 9deg; }
-  .plans.deck > .plan-main { z-index: 2; transform: translateY(calc(var(--f) * 30px)) scale(calc(1 + var(--f) * .05)); }
-}
-@media (max-width: 899px) {
-  .plan { padding: 22px 20px; gap: 12px; }
-  .price { font-size: 28px; }
 }
 
 /* ---------- Сцена 7: финал ---------- */

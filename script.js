@@ -84,15 +84,13 @@ const CONFIG = {
   };
 
   /* ---------- Закреплённые сцены: прогресс → --sp ---------- */
-  const desktopFan = matchMedia('(min-width: 900px)');
   const pins = $$('.scene-pin').map(el => ({
     el,
     last: -1,
     decks: $$('.deck', el).map(d => ({
       el: d,
       cards: [...d.children],
-      range: (d.dataset.range || '0.08,0.9').split(',').map(Number),
-      isPlans: d.classList.contains('plans')
+      range: (d.dataset.range || '0.08,0.9').split(',').map(Number)
     })),
     nav: $$('.deck-nav li', el),
     count: $('.deck-count', el)
@@ -100,8 +98,7 @@ const CONFIG = {
 
   const layoutDeck = (pin, d, sp) => {
     const n = d.cards.length;
-    const off = reduce || (d.isPlans && desktopFan.matches);
-    if (off) {
+    if (reduce) {
       d.cards.forEach(c => { c.inert = false; c.style.removeProperty('--ci'); c.style.removeProperty('--depth'); });
       return;
     }
@@ -191,7 +188,6 @@ const CONFIG = {
   };
   let rt;
   addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(relayout, 120); });
-  desktopFan.addEventListener?.('change', relayout);
   relayout();
   document.fonts && document.fonts.ready.then(relayout);
   addEventListener('load', relayout);
