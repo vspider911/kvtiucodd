@@ -11,7 +11,7 @@
 <meta property="og:image" content="img/coffee.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="img/coffee.webp" type="image/webp">
 <link rel="preload" as="image" href="img/barber.webp" type="image/webp">
 <link rel="preload" as="image" href="img/auto.webp" type="image/webp">
@@ -30,12 +30,35 @@
 <header class="top">
   <a class="logo" href="#top" aria-label="kvtiucodd — наверх">kvtiucodd<span class="logo-dot" aria-hidden="true"></span></a>
   <nav class="nav" aria-label="Разделы">
-    <a href="#works" data-jump="1">Работы</a>
-    <a href="#services">Услуги</a>
-    <a href="#inside">Что внутри</a>
+    <a href="#works" data-jump="1" data-spy="works">Работы</a>
+    <a href="#services" data-spy="services">Услуги</a>
+    <a href="#play" data-spy="play">Песочница</a>
+    <a href="#inside" data-spy="inside">Что внутри</a>
+    <a href="#lead" data-spy="contact">Заявка</a>
+    <span class="nav-bar" aria-hidden="true"></span>
   </nav>
-  <a class="btn btn-small" data-wa href="#contact">Написать</a>
+  <div class="top-right">
+    <div class="hud" aria-hidden="true">
+      <span class="hud-status"><i class="hud-dot"></i><span class="hud-text">На связи</span></span>
+      <span class="hud-clock"><b>--:--</b> МСК</span>
+    </div>
+    <a class="top-link" data-tg href="https://t.me/kvtiucodd">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>Telegram
+    </a>
+    <a class="btn btn-small" data-wa href="#contact">Написать</a>
+    <button class="menu-btn" type="button" aria-label="Меню" aria-expanded="false" aria-controls="menu"><i></i><i></i></button>
+  </div>
 </header>
+
+<div class="menu-backdrop" aria-hidden="true"></div>
+<nav class="menu" id="menu" aria-label="Меню" inert>
+  <a href="#works" data-jump="1" style="--i:0">Работы<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+  <a href="#services" style="--i:1">Услуги<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+  <a href="#play" style="--i:2">Песочница<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+  <a href="#inside" style="--i:3">Что внутри<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+  <a href="#process" style="--i:4">Как это работает<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+  <a href="#lead" style="--i:5">Оставить заявку<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+</nav>
 
 <main id="top">
 

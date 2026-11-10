@@ -2,7 +2,8 @@
 const CONFIG = {
   whatsapp: '79261408245',      // номер без «+»: +7 926 140-82-45
   telegram: 'kvtiucodd',        // ник без «@»
-  message: 'Здравствуйте! Хочу бесплатное демо сайта. Мой бизнес: '
+  message: 'Здравствуйте! Хочу бесплатное демо сайта. Мой бизнес: ',
+  hours: [9, 22]                // когда вы «на связи» (по Москве) — для индикатора в шапке
 };
 /* ========================================== */
 
@@ -166,6 +167,57 @@ const CONFIG = {
     svcCount.textContent = `${Math.min(svcCards.length, Math.round(p * (svcCards.length - 1)) + 1)} / ${svcCards.length}`;
   };
 
+  /* ---------- Шапка: стекло после прокрутки и бегунок под текущим разделом ---------- */
+  const topBar = $('.top'), navEl = $('.nav'), navBar = $('.nav-bar');
+  const spyLinks = $$('.nav a[data-spy]');
+  const spySections = spyLinks.map(a => document.getElementById(a.dataset.spy));
+  let spyActive = -2, hoverLink = null;
+  const moveBar = a => {
+    if (!a) { navBar.style.setProperty('--o', 0); return; }
+    navBar.style.setProperty('--x', `${a.offsetLeft}px`);
+    navBar.style.setProperty('--w', `${a.offsetWidth}px`);
+    navBar.style.setProperty('--o', 1);
+  };
+  const updateTop = () => {
+    topBar.classList.toggle('is-scrolled', scrollY > 8);
+    const mid = innerHeight * 0.45;
+    let idx = -1;
+    spySections.forEach((s, i) => { if (s && s.getBoundingClientRect().top <= mid) idx = i; });
+    if (idx === 0 && sectionProgress(stage) < BOUNDS[1] - 0.02) idx = -1;   // первый экран — ещё не «Работы»
+    if (idx !== spyActive) {
+      spyActive = idx;
+      spyLinks.forEach((a, i) => {
+        a.classList.toggle('is-active', i === idx);
+        if (i === idx) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+      });
+      if (!hoverLink) moveBar(spyLinks[idx]);
+    }
+  };
+  spyLinks.forEach(a => {
+    a.addEventListener('pointerenter', () => { hoverLink = a; moveBar(a); });
+    a.addEventListener('focus', () => { hoverLink = a; moveBar(a); });
+    a.addEventListener('blur', () => { hoverLink = null; moveBar(spyLinks[spyActive]); });
+  });
+  navEl.addEventListener('pointerleave', () => { hoverLink = null; moveBar(spyLinks[spyActive]); });
+
+  /* ---------- Выезжающее меню (телефон и планшет) ---------- */
+  const menu = $('#menu'), menuBtn = $('.menu-btn'), backdrop = $('.menu-backdrop');
+  const setMenu = open => {
+    menu.classList.toggle('is-open', open);
+    backdrop.classList.toggle('is-open', open);
+    topBar.classList.toggle('menu-open', open);
+    menu.inert = !open;
+    menuBtn.setAttribute('aria-expanded', open);
+    menuBtn.setAttribute('aria-label', open ? 'Закрыть меню' : 'Меню');
+  };
+  menuBtn.addEventListener('click', () => setMenu(!menu.classList.contains('is-open')));
+  backdrop.addEventListener('click', () => setMenu(false));
+  menu.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
+  addEventListener('keydown', e => {
+    if (e.key === 'Escape' && menu.classList.contains('is-open')) { setMenu(false); menuBtn.focus(); }
+  });
+  matchMedia('(min-width: 1000px)').addEventListener?.('change', () => setMenu(false));
+
   /* ---------- Общий цикл ---------- */
   const root = document.documentElement;
   let ticking = false;
@@ -173,6 +225,7 @@ const CONFIG = {
     ticking = false;
     const max = root.scrollHeight - innerHeight;
     root.style.setProperty('--page', max > 0 ? (scrollY / max).toFixed(4) : 0);
+    updateTop();
     updateStage();
     updateScrubs();
     updatePins();
@@ -185,6 +238,7 @@ const CONFIG = {
     layoutServices();
     pins.forEach(p => { p.last = -1; });
     update();
+    moveBar(hoverLink || spyLinks[spyActive]);   // ширина ссылок меняется после загрузки шрифта
   };
   let rt;
   addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(relayout, 120); });
@@ -578,6 +632,21 @@ const CONFIG = {
     return new Date(d.getTime() + (d.getTimezoneOffset() + 180) * 60000);
   };
   const pad = n => String(n).padStart(2, '0');
+
+  /* ---------- Шапка: индикатор «на связи» и часы по Москве ---------- */
+  const hud = $('.hud');
+  if (hud) {
+    const [FROM, TO] = CONFIG.hours;
+    const renderHud = () => {
+      const now = msk();
+      const online = now.getHours() >= FROM && now.getHours() < TO;
+      hud.classList.toggle('is-off', !online);
+      $('.hud-text', hud).textContent = online ? 'На связи' : 'Отвечу утром';
+      $('.hud-clock b', hud).textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    };
+    renderHud();
+    setInterval(renderHud, 20000);
+  }
 
   /* ---------- Статус «Открыто / Закрыто» ---------- */
   const statusCard = $('.card-status');
