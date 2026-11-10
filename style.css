@@ -225,6 +225,13 @@ p { text-wrap: pretty; }
     var(--bg);
 }
 .scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: pan-y; }
+/* затемнение под текстом и шапкой, чтобы надписи не сливались с вихрем */
+.stage-sticky::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(rgba(10, 9, 24, .6), rgba(10, 9, 24, 0) 15%),
+    linear-gradient(90deg, rgba(10, 9, 24, .9) 0%, rgba(10, 9, 24, .68) 30%, rgba(10, 9, 24, 0) 60%);
+}
 .scene.dragging { cursor: grabbing; }
 .drag-hint { display: inline-flex; align-items: center; gap: 12px; margin-top: 22px; color: var(--muted) !important; font-size: 14px !important; font-weight: 600; }
 .drag-hint i { position: relative; width: 36px; height: 2px; background: var(--line); }
@@ -242,7 +249,7 @@ p { text-wrap: pretty; }
   border: 10px solid #2B2758; border-radius: 34px;
 }
 
-.panels { position: absolute; inset: 0; max-width: var(--max); margin: 0 auto; pointer-events: none; }
+.panels { position: absolute; inset: 0; z-index: 2; max-width: var(--max); margin: 0 auto; pointer-events: none; }
 .panel {
   position: absolute; left: var(--gutter); right: var(--gutter); top: 50%;
   max-width: 540px;
@@ -259,13 +266,13 @@ p { text-wrap: pretty; }
 .panel .lead { margin: 24px 0 32px; color: #CFCDF0; }
 .kicker { color: var(--amber) !important; font-weight: 700; font-size: 16px !important; margin-bottom: 14px; }
 
-.stage-progress { position: absolute; left: var(--gutter); bottom: 32px; display: flex; gap: 6px; }
+.stage-progress { position: absolute; z-index: 3; left: var(--gutter); bottom: 32px; display: flex; gap: 6px; }
 .stage-progress span { width: 28px; height: 3px; border-radius: 2px; background: rgba(184, 178, 255, .22); transition: background .3s; }
 .stage-progress span.on { background: var(--amber); }
 @media (min-width: 1244px) { .stage-progress { left: calc((100% - var(--max)) / 2 + var(--gutter)); } }
 
 .scroll-hint {
-  position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%);
+  position: absolute; z-index: 3; left: 50%; bottom: 28px; transform: translateX(-50%);
   color: var(--muted); font-size: 13px; font-weight: 600;
   display: flex; flex-direction: column; align-items: center; gap: 8px;
   transition: opacity .3s;
@@ -279,6 +286,7 @@ p { text-wrap: pretty; }
 @keyframes hint { 0% { transform: scaleY(0); } 60% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
 
 @media (max-width: 767px), (max-aspect-ratio: 17/20) {
+  .stage-sticky::before { background: linear-gradient(rgba(10, 9, 24, .6), rgba(10, 9, 24, 0) 15%); }
   .stage-sticky::after {
     content: ""; position: absolute; inset: auto 0 0; height: 58%;
     background: linear-gradient(rgba(10, 9, 24, 0), rgba(10, 9, 24, .88) 38%, var(--bg));

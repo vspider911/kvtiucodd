@@ -346,6 +346,84 @@ async function init() {
   }));
   scene.add(points);
 
+  /* ---------- «Вселенная»: вихрь-галактика за телефоном ---------- */
+  const vortexMat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 }, uTwist: { value: 0 }, uOpacity: { value: 0 },
+      uColA: { value: new THREE.Color('#5A4BE0') },
+      uColB: { value: new THREE.Color(ACCENTS[0]) }
+    },
+    vertexShader: /* glsl */`
+      varying vec2 vUv;
+      void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: /* glsl */`
+      precision highp float;
+      uniform float uTime, uTwist, uOpacity;
+      uniform vec3 uColA, uColB;
+      varying vec2 vUv;
+      float hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+      float noise(vec2 p) {
+        vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+        return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
+      }
+      float fbm(vec2 p) { float v = 0.0, a = 0.5; for (int i = 0; i < 4; i++) { v += a * noise(p); p = p * 2.02 + vec2(3.1, 1.7); a *= 0.5; } return v; }
+      void main() {
+        vec2 p = (vUv - 0.5) * 2.0;
+        float r = length(p);
+        if (r > 1.0) discard;
+        float a = atan(p.y, p.x);
+        // логарифмическая спираль: чем ближе к центру, тем сильнее закручено
+        float sw = a + 3.2 * log(r + 0.05) - uTime * 0.16 + uTwist;
+        vec2 q = vec2(cos(sw), sin(sw)) * (0.6 + r * 1.8);
+        float n = fbm(q * 2.2 + uTime * 0.03);
+        float arms = 0.5 + 0.5 * sin(sw * 2.0 + n * 2.6);
+        float band = smoothstep(0.2, 1.0, arms) * (0.22 + 0.95 * n);
+        float fall = pow(1.0 - r, 1.5);                       // гаснет к краю
+        float hole = smoothstep(0.04, 0.3, r);                // тёмный центр
+        float rim = exp(-pow((r - 0.2) / 0.075, 2.0));        // светящийся ободок
+        float v = band * fall * hole * 1.0 + rim * 0.16 * (0.55 + 0.45 * arms);
+        vec3 col = mix(uColA, uColB, clamp(0.2 + n * 0.9 + rim * 0.6 - r * 0.35, 0.0, 1.0));
+        gl_FragColor = vec4(col * v * uOpacity, 1.0);
+        #include <colorspace_fragment>
+      }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+  });
+  const vortex = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), vortexMat);
+  vortex.renderOrder = -1;
+  scene.add(vortex);
+
+  /* ---------- Парящие кубы: тёмное стекло со светящимися гранями ---------- */
+  const boxGeo = new THREE.BoxGeometry(1, 1, 1);
+  const edgeGeo = new THREE.EdgesGeometry(boxGeo);
+  const cubeMat = new THREE.MeshPhysicalMaterial({ color: 0x0D0B22, metalness: 0.8, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.2, envMapIntensity: 0.45 });
+  const edgeMats = [
+    new THREE.LineBasicMaterial({ color: 0xFFB547, transparent: true, opacity: 0.95 }),
+    new THREE.LineBasicMaterial({ color: 0xB8B2FF, transparent: true, opacity: 0.85 })
+  ];
+  const CUBES = innerWidth < 768 ? 9 : 16;
+  const cubes = [];
+  for (let i = 0; i < CUBES; i++) {
+    const g = new THREE.Group();
+    g.add(new THREE.Mesh(boxGeo, cubeMat));
+    g.add(new THREE.LineSegments(edgeGeo, edgeMats[i % 2]));
+    const big = i < 2;                                  // пара крупных у краёв, близко к камере
+    const z = big ? 3 + Math.random() * 1.5 : -6 + Math.random() * 8.5;
+    const minR = z > -1 ? 5.2 : 2.6;                    // ближние не перекрывают телефон
+    const c = {
+      g, z,
+      size: big ? 1.5 + Math.random() * 0.6 : 0.2 + Math.pow(Math.random(), 2) * 0.85,
+      R: big ? 8.2 + i * 1.4 : minR + Math.random() * (9.5 - minR),
+      a0: big ? (i ? 2.25 : -0.5) : Math.random() * Math.PI * 2,     // крупные — справа внизу и сверху, не под заголовком
+      speed: 0,
+      bob: Math.random() * 6.28,
+      spinV: new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).multiplyScalar(big ? 0.25 : 0.9)
+    };
+    c.speed = (big ? 0.012 : 0.06) / (0.4 + c.R * 0.18);   // ближе к центру — быстрее
+    g.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3);
+    cubes.push(c);
+    scene.add(g);
+  }
+
   /* ---------- Раскладка ---------- */
   const layout = { x: 0, y: 0, s: 1, mobile: false };
   function resize() {
@@ -482,6 +560,35 @@ async function init() {
 
     points.rotation.y = (reduce ? 0 : t * 0.025) + pS * 0.9;
     points.position.y = pS * 3;
+
+    // Вихрь: центр за телефоном, закручивается от времени, прокрутки и кручения телефона
+    const vt = reduce ? 20 : t;
+    const cx = layout.x, cy = layout.y - 0.2 * layout.s;
+    vortex.position.set(cx - mx * 0.25 * tilt, cy + my * 0.15 * tilt, -5.5 - 9 * (1 - ie));
+    vortex.scale.setScalar(layout.s * (layout.mobile ? 30 : 27) * (1 + boost * 0.06));
+    vortex.rotation.set(-0.32 + my * 0.05 * tilt, mx * 0.06 * tilt, 0);
+    vortexMat.uniforms.uTime.value = vt;
+    vortexMat.uniforms.uTwist.value = -pS * 2.4 - spin * 0.25;
+    vortexMat.uniforms.uOpacity.value = ie * (0.85 - 0.3 * h + boost * 0.35);
+    vortexMat.uniforms.uColB.value.copy(glowMat.color);
+
+    // Кубы кружат вокруг вихря
+    for (let i = 0; i < cubes.length; i++) {
+      const c = cubes[i];
+      const ang = c.a0 + vt * c.speed + pS * (0.9 + 2.2 / c.R);
+      const depth = (c.z + 6) / 11;                     // 0 — далеко, 1 — близко
+      c.g.position.set(
+        cx + Math.cos(ang) * c.R * layout.s - mx * (0.2 + depth * 0.9) * tilt,
+        cy + Math.sin(ang) * c.R * 0.62 * layout.s + Math.sin(vt * 0.6 + c.bob) * 0.16 * tilt + my * (0.15 + depth * 0.5) * tilt,
+        c.z - 9 * (1 - ie)
+      );
+      c.g.scale.setScalar(c.size * layout.s * (0.6 + 0.4 * ie));
+      if (!reduce) {
+        c.g.rotation.x += c.spinV.x * dt;
+        c.g.rotation.y += c.spinV.y * dt;
+        c.g.rotation.z += c.spinV.z * dt;
+      }
+    }
 
     renderer.render(scene, camera);
   }
