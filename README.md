@@ -38,12 +38,24 @@ python main.py
 Настройки — в начале `api/contact.py`. Счётчики живут в памяти: локально — пока работает `main.py`,
 на Vercel — пока жив экземпляр функции (для строгого лимита там нужна база, например Upstash Redis).
 
-## Хостинг на Vercel
+## Хостинг
+
+Сайт: **https://vspider911.github.io/kvtiucodd/** (GitHub Pages, репозиторий `vspider911/kvtiucodd`, ветка `main`).
+Обновить: `git push` — Pages пересоберётся сам.
+
+На GitHub Pages нет сервера, поэтому заявки из формы принимает функция на Vercel
+(`https://kvtiucodd.vercel.app/api/contact`, адрес в `CONFIG.api` в `script.js`).
+Разрешённые сайты для заявок — `DEFAULT_ORIGINS` в `api/contact.py`.
+
+Телефон на первом экране ведёт на работы на GitHub Pages — список `WORK_URLS` в `scene.js`
+и кнопки «Открыть сайт» в `index.html`.
+
+## Сервер заявок на Vercel
 
 Add New → Project → репозиторий → Deploy. Затем Settings → Environment Variables:
 `TG_BOT_TOKEN` и `TG_CHAT_ID` → Redeploy. Заявки обрабатывает `api/contact.py`.
 
-GitHub Pages не подойдёт для формы: там нет сервера, заявки не отправятся.
+Сам сайт при этом лежит на GitHub Pages (см. выше), Vercel нужен только для заявок.
 
 ## Что поменять перед запуском
 
