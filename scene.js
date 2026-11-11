@@ -7,9 +7,15 @@ const stage = document.querySelector('.stage');
 const sticky = canvas.parentElement;
 const reduceMQ = matchMedia('(prefers-reduced-motion: reduce)');
 
-const BOUNDS = [0, 0.22, 0.48, 0.74];        // совпадает с script.js
+const BOUNDS = [0, 0.2, 0.4, 0.6, 0.8];      // совпадает с script.js
 const FLIPS = BOUNDS.slice(1);               // где телефон переворачивается
-const ACCENTS = ['#FFB547', '#E9A15E', '#E0463A', '#FFC400'];
+const ACCENTS = ['#FFB547', '#F4BF4F', '#D4733A', '#FF5A1F', '#C2546F'];
+// Ваши работы на GitHub Pages: нажатие на экран телефона открывает текущую
+const WORK_URLS = [null,
+  'https://vspider911.github.io/coffeDemo/',
+  'https://vspider911.github.io/texturademo/',
+  'https://vspider911.github.io/autoservisdemo2/',
+  'https://vspider911.github.io/beautydemo/'];
 
 /* ---------- Экраны телефона (рисуются на canvas) ---------- */
 const SW = 640, SH = 1400;
@@ -126,41 +132,41 @@ function screenCoffee(img) {
   return c;
 }
 
-function screenBarber(img) {
-  const BG = '#111111';
+function screenTexture(img) {
+  const BG = '#121110', A = '#D4733A';
   const c = document.createElement('canvas'); c.width = SW; c.height = SH;
   const ctx = c.getContext('2d');
   ctx.fillStyle = BG; ctx.fillRect(0, 0, SW, SH);
   cover(ctx, img, 0, 0, SW, 660);
-  shadeTop(ctx, 240, 0.55);
+  shadeTop(ctx, 240, 0.6);
   fadeTo(ctx, 440, 662, BG);
   statusBar(ctx, '#FFFFFF');
-  txt(ctx, 'СТАЛЬ', 52, 172, '800 52px Unbounded', '#FFFFFF');
-  chip(ctx, SW - 48, 132, '★ 4,9', '#C8372D', '#FFFFFF');
+  txt(ctx, 'ТЕКСТУРА', 52, 172, '800 46px Unbounded', '#F1ECE4');
+  chip(ctx, SW - 48, 132, '★ 4,9', A, '#FFFFFF');
 
-  txt(ctx, 'Стрижка', 52, 720, '700 58px Unbounded', '#FFFFFF');
-  txt(ctx, 'и борода', 52, 790, '700 58px Unbounded', '#FFFFFF');
-  txt(ctx, 'Свободно сегодня', 52, 872, '600 28px Manrope', '#9A9A9A');
+  txt(ctx, 'Стрижка', 52, 720, '700 58px Unbounded', '#F1ECE4');
+  txt(ctx, 'и борода', 52, 790, '700 58px Unbounded', '#F1ECE4');
+  txt(ctx, 'Свободно сегодня', 52, 872, '600 28px Manrope', '#A59C91');
 
   const T = ['11:00', '12:30', '14:00', '15:30', '17:00', '18:30', '19:00', '20:00', '21:00'];
   const busy = new Set([1, 3, 4, 7]); const sel = 5;
   const cw = (SW - 104 - 32) / 3;
   T.forEach((t, i) => {
     const x = 52 + (i % 3) * (cw + 16), y = 900 + Math.floor(i / 3) * 92;
-    if (i === sel) rect(ctx, x, y, cw, 76, 8, '#C8372D');
-    else if (!busy.has(i)) rect(ctx, x, y, cw, 76, 8, '#232323');
-    else { ctx.strokeStyle = '#2E2E2E'; ctx.lineWidth = 2; ctx.beginPath(); ctx.roundRect(x, y, cw, 76, 8); ctx.stroke(); }
-    const col = busy.has(i) ? '#555555' : '#FFFFFF';
+    if (i === sel) rect(ctx, x, y, cw, 76, 8, A);
+    else if (!busy.has(i)) rect(ctx, x, y, cw, 76, 8, '#23201D');
+    else { ctx.strokeStyle = '#34302C'; ctx.lineWidth = 2; ctx.beginPath(); ctx.roundRect(x, y, cw, 76, 8); ctx.stroke(); }
+    const col = busy.has(i) ? '#5A534C' : '#F1ECE4';
     txt(ctx, t, x + cw / 2, y + 49, '700 30px Manrope', col, 'center');
-    if (busy.has(i)) { ctx.fillStyle = '#555555'; ctx.fillRect(x + cw / 2 - 44, y + 38, 88, 3); }
+    if (busy.has(i)) { ctx.fillStyle = '#5A534C'; ctx.fillRect(x + cw / 2 - 44, y + 38, 88, 3); }
   });
-  button(ctx, 1200, '#C8372D', '#FFFFFF', 'Записаться на 18:30');
-  txt(ctx, 'Мастер: Артём', SW / 2, 1346, '600 26px Manrope', '#8A8A8A', 'center');
+  button(ctx, 1200, A, '#FFFFFF', 'Записаться на 18:30');
+  txt(ctx, 'ул. Генерала Белова', SW / 2, 1346, '600 26px Manrope', '#A59C91', 'center');
   return c;
 }
 
-function screenAuto(img) {
-  const BG = '#16181C', Y = '#FFC400';
+function screenTechbox(img) {
+  const BG = '#111315', A = '#FF5A1F';
   const c = document.createElement('canvas'); c.width = SW; c.height = SH;
   const ctx = c.getContext('2d');
   ctx.fillStyle = BG; ctx.fillRect(0, 0, SW, SH);
@@ -168,26 +174,52 @@ function screenAuto(img) {
   shadeTop(ctx, 260, 0.65);
   fadeTo(ctx, 420, 642, BG);
   statusBar(ctx, '#FFFFFF');
-  rect(ctx, 52, 128, 18, 48, 3, Y);
-  txt(ctx, 'QuickMade', 84, 172, '800 46px Unbounded', '#FFFFFF');
+  rect(ctx, 52, 128, 18, 48, 3, A);
+  txt(ctx, 'ТехБокс', 84, 172, '800 48px Unbounded', '#FFFFFF');
 
-  txt(ctx, 'Ремонт', 52, 690, '700 54px Unbounded', '#FFFFFF');
-  txt(ctx, 'без сюрпризов', 52, 756, '700 54px Unbounded', '#FFFFFF');
+  txt(ctx, 'Цена', 52, 690, '700 54px Unbounded', '#EEF0F2');
+  txt(ctx, 'до начала работ', 52, 756, '700 54px Unbounded', '#EEF0F2');
   const items = [['Замена масла', '1 500 ₽', 1], ['Диагностика', '900 ₽', 1], ['Колодки', '1 800 ₽', 0], ['Шиномонтаж', '2 400 ₽', 0]];
   items.forEach(([n, p, on], i) => {
     const y = 830 + i * 84;
     if (on) {
-      rect(ctx, 52, y, 42, 42, 6, Y);
-      ctx.strokeStyle = '#16181C'; ctx.lineWidth = 5; ctx.lineCap = 'round';
+      rect(ctx, 52, y, 42, 42, 6, A);
+      ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 5; ctx.lineCap = 'round';
       ctx.beginPath(); ctx.moveTo(62, y + 22); ctx.lineTo(70, y + 30); ctx.lineTo(85, y + 13); ctx.stroke();
-    } else { ctx.strokeStyle = '#4A4E57'; ctx.lineWidth = 3; ctx.beginPath(); ctx.roundRect(53, y + 1, 40, 40, 6); ctx.stroke(); }
-    txt(ctx, n, 116, y + 32, '600 31px Manrope', on ? '#FFFFFF' : '#8B909A');
-    txt(ctx, p, SW - 52, y + 32, '700 31px Manrope', on ? '#FFFFFF' : '#8B909A', 'right');
+    } else { ctx.strokeStyle = '#2B3035'; ctx.lineWidth = 3; ctx.beginPath(); ctx.roundRect(53, y + 1, 40, 40, 6); ctx.stroke(); }
+    txt(ctx, n, 116, y + 32, '600 31px Manrope', on ? '#FFFFFF' : '#98A1A9');
+    txt(ctx, p, SW - 52, y + 32, '700 31px Manrope', on ? '#FFFFFF' : '#98A1A9', 'right');
   });
-  ctx.fillStyle = '#2A2D33'; ctx.fillRect(52, 1172, SW - 104, 2);
-  txt(ctx, 'Итого от', 52, 1232, '600 30px Manrope', '#8B909A');
-  txt(ctx, '2 400 ₽', SW - 52, 1236, '800 46px Unbounded', Y, 'right');
-  button(ctx, 1270, Y, '#16181C', 'Записаться в бокс');
+  ctx.fillStyle = '#2B3035'; ctx.fillRect(52, 1172, SW - 104, 2);
+  txt(ctx, 'Итого от', 52, 1232, '600 30px Manrope', '#98A1A9');
+  txt(ctx, '2 400 ₽', SW - 52, 1236, '800 46px Unbounded', A, 'right');
+  button(ctx, 1270, A, '#FFFFFF', 'Записаться в бокс');
+  return c;
+}
+
+function screenFreya(img) {
+  const BG = '#F4ECEC', A = '#8E2C46', INK = '#24191B';
+  const c = document.createElement('canvas'); c.width = SW; c.height = SH;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = BG; ctx.fillRect(0, 0, SW, SH);
+  cover(ctx, img, 0, 0, SW, 640);
+  shadeTop(ctx, 240, 0.45);
+  fadeTo(ctx, 460, 642, BG);
+  statusBar(ctx, '#FFFFFF');
+  txt(ctx, 'Фрэя', 52, 176, '700 58px Unbounded', '#FFFFFF');
+  chip(ctx, SW - 48, 132, 'Открыто', 'rgba(255,255,255,.94)', INK, '#2DBE6C');
+
+  txt(ctx, 'Салон', 52, 712, '700 54px Unbounded', INK);
+  txt(ctx, 'красоты', 52, 776, '700 54px Unbounded', INK);
+  const items = [['Стрижка и укладка', 'от 1 800 ₽'], ['Окрашивание', 'от 3 500 ₽'], ['Маникюр', 'от 1 500 ₽']];
+  items.forEach(([n, p], i) => {
+    const y = 880 + i * 84;
+    txt(ctx, n, 52, y, '600 31px Manrope', '#3A2A2D');
+    txt(ctx, p, SW - 52, y, '800 31px Manrope', A, 'right');
+    ctx.fillStyle = '#E7D9DA'; ctx.fillRect(52, y + 28, SW - 104, 2);
+  });
+  button(ctx, 1170, A, '#FFFFFF', 'Записаться онлайн');
+  txt(ctx, 'Лобачевского', SW / 2, 1330, '600 26px Manrope', '#6E5E61', 'center');
   return c;
 }
 
@@ -237,7 +269,7 @@ async function init() {
     return;
   }
 
-  const fontText = 'Ваше название Зерно СТАЛЬ QuickMade Ремонт 0123456789₽★';
+  const fontText = 'Ваше название Зерно ТЕКСТУРА ТехБокс Фрэя Салон Цена 0123456789₽★';
   await Promise.all([
     document.fonts.load('800 80px Unbounded', fontText),
     document.fonts.load('700 50px Unbounded', fontText),
@@ -245,8 +277,8 @@ async function init() {
     document.fonts.load('600 30px Manrope', fontText),
     document.fonts.load('800 30px Manrope', fontText)
   ]).catch(() => {});
-  const [imgCoffee, imgBarber, imgAuto] = await Promise.all(
-    ['img/coffee.webp', 'img/barber.webp', 'img/auto.webp'].map(loadImg)
+  const [imgCoffee, imgTexture, imgTechbox, imgFreya] = await Promise.all(
+    ['img/coffee.webp', 'img/texture.webp', 'img/techbox.webp', 'img/freya.webp'].map(loadImg)
   );
 
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -273,7 +305,7 @@ async function init() {
     t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = maxAniso;
     return t;
   };
-  const screens = [screenSplash(), screenCoffee(imgCoffee), screenBarber(imgBarber), screenAuto(imgAuto)].map(toTex);
+  const screens = [screenSplash(), screenCoffee(imgCoffee), screenTexture(imgTexture), screenTechbox(imgTechbox), screenFreya(imgFreya)].map(toTex);
 
   // Телефон
   const W = 3, H = 6.3;
@@ -480,9 +512,23 @@ async function init() {
     if (!dragging) return;
     dragging = false; canvas.classList.remove('dragging');
     if (e.type === 'pointerup' && Math.abs(e.clientX - downX) < 6 && performance.now() - downT < 280) {
-      spinVel += 0.32; boost = 1;
+      const url = WORK_URLS[shownScreen];
+      if (url && hitPhone(e)) { boost = 1; window.open(url, '_blank', 'noopener'); }   // открыть работу
+      else { spinVel += 0.32; boost = 1; }
     }
   };
+  // Попадание курсора в телефон (сайт открывается только по нажатию на сам телефон)
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  const hitPhone = e => {
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    return ray.intersectObject(phone, true).length > 0;
+  };
+  canvas.addEventListener('pointermove', e => {
+    if (dragging || e.pointerType !== 'mouse') return;
+    canvas.style.cursor = WORK_URLS[shownScreen] && hitPhone(e) ? 'pointer' : '';
+  });
   canvas.addEventListener('pointerup', endDrag);
   canvas.addEventListener('pointercancel', endDrag);
 

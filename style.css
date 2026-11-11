@@ -213,7 +213,7 @@ p { text-wrap: pretty; }
 }
 
 /* ---------- Сцена 1: 3D-телефон ---------- */
-.stage { position: relative; height: 420vh; height: 420svh; }
+.stage { position: relative; height: 500vh; height: 500svh; }
 .stage-sticky {
   position: sticky; top: 0;
   height: 100vh; height: 100svh;
@@ -265,6 +265,19 @@ p { text-wrap: pretty; }
 .panel p { color: var(--muted); font-size: 18px; max-width: 46ch; }
 .panel .lead { margin: 24px 0 32px; color: #CFCDF0; }
 .kicker { color: var(--amber) !important; font-weight: 700; font-size: 16px !important; margin-bottom: 14px; }
+/* ссылка на работу на GitHub Pages */
+.work-link {
+  display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-top: 26px; padding: 12px 16px;
+  border: 1px solid rgba(255, 181, 71, .45); border-radius: var(--radius);
+  background: rgba(255, 181, 71, .06);
+  color: var(--ink); font-weight: 700; font-size: 15px; text-decoration: none;
+  transition: background .2s, border-color .2s, box-shadow .2s;
+}
+.work-link svg { width: 16px; height: 16px; fill: none; stroke: var(--amber); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s; }
+.work-link:hover { background: rgba(255, 181, 71, .14); border-color: var(--amber); box-shadow: 0 0 24px rgba(255, 181, 71, .25); }
+.work-link:hover svg { transform: translate(2px, -2px); }
+.work-url { font: 500 12px/1 "JetBrains Mono", ui-monospace, monospace; color: var(--muted); font-weight: 500; }
 
 .stage-progress { position: absolute; z-index: 3; left: var(--gutter); bottom: 32px; display: flex; gap: 6px; }
 .stage-progress span { width: 28px; height: 3px; border-radius: 2px; background: rgba(184, 178, 255, .22); transition: background .3s; }
@@ -301,6 +314,8 @@ p { text-wrap: pretty; }
   .panel p { font-size: 16px; }
   .panel .lead { margin: 14px 0 20px; font-size: 15px; }
   .kicker { margin-bottom: 8px; font-size: 15px !important; }
+  .work-link { margin-top: 14px; padding: 10px 14px; }
+  .work-url { display: none; }
   .stage-progress { top: 64px; bottom: auto; z-index: 3; }
   .scroll-hint { display: none; }
   .no-3d .fallback { right: auto; left: 50%; top: 14%; transform: translateX(-50%); width: 44vw; }

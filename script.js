@@ -3,7 +3,10 @@ const CONFIG = {
   whatsapp: '79261408245',      // номер без «+»: +7 926 140-82-45
   telegram: 'kvtiucodd',        // ник без «@»
   message: 'Здравствуйте! Хочу бесплатное демо сайта. Мой бизнес: ',
-  hours: [9, 22]                // когда вы «на связи» (по Москве) — для индикатора в шапке
+  hours: [9, 22],               // когда вы «на связи» (по Москве) — для индикатора в шапке
+  // Куда уходят заявки. Сайт лежит на GitHub Pages (там нет сервера),
+  // поэтому заявки принимает функция на Vercel и пересылает их в Telegram.
+  api: 'https://kvtiucodd.vercel.app/api/contact'
 };
 /* ========================================== */
 
@@ -61,7 +64,7 @@ const CONFIG = {
   const panels = $$('.panel', stage);
   const ticks = $$('.stage-progress span', stage);
   const hint = $('.scroll-hint', stage);
-  const BOUNDS = [0, 0.22, 0.48, 0.74];
+  const BOUNDS = [0, 0.2, 0.4, 0.6, 0.8];   // совпадает с scene.js
   let current = -1;
   const sectionProgress = el => {
     const r = el.getBoundingClientRect();
@@ -589,7 +592,9 @@ const CONFIG = {
       submit.textContent = 'Отправляю…';
       msg.textContent = '';
       try {
-        const res = await fetch('/api/contact', {
+        // локально (main.py) и на самом Vercel — свой сервер, на GitHub Pages — сервер на Vercel
+        const sameServer = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || location.hostname.endsWith('.vercel.app');
+        const res = await fetch(sameServer ? '/api/contact' : CONFIG.api, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           // русские буквы кодируем как \uXXXX: тело запроса — только ASCII,

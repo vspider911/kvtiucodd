@@ -119,13 +119,23 @@ def send_to_telegram(data):
         return json.load(response)
 
 
+# Сайты на других адресах, которым можно слать заявки сюда (сайт на GitHub Pages, сервер на Vercel).
+# Можно переопределить переменной окружения ALLOWED_ORIGINS через запятую.
+DEFAULT_ORIGINS = 'https://vspider911.github.io'
+
+
+def origin_allowed(origin):
+    allowed = os.environ.get('ALLOWED_ORIGINS', DEFAULT_ORIGINS)
+    return origin.rstrip('/').lower() in {o.strip().rstrip('/').lower() for o in allowed.split(',') if o.strip()}
+
+
 def process(raw, ip='', origin='', host=''):
     """Проверяет заявку и отправляет её. Возвращает (HTTP-статус, ответ)."""
     now = time.time()
     ip = ip or 'unknown'
 
-    # заявки только с нашего сайта
-    if origin and host and urlparse(origin).netloc.lower() != host.lower():
+    # заявки только с нашего сайта: тот же адрес или сайт из списка ALLOWED_ORIGINS (GitHub Pages)
+    if origin and host and urlparse(origin).netloc.lower() != host.lower() and not origin_allowed(origin):
         return 403, {'ok': False, 'error': 'Заявку можно отправить только с сайта'}
 
     # слишком много попыток с одного адреса
@@ -232,9 +242,26 @@ class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_json(405, {'ok': False, 'error': 'Только POST'})
 
+    def do_OPTIONS(self):
+        # предварительный запрос браузера перед заявкой с другого сайта (CORS)
+        self.send_response(204)
+        self.cors_headers()
+        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.send_header('Access-Control-Max-Age', '86400')
+        self.send_header('Content-Length', '0')
+        self.end_headers()
+
+    def cors_headers(self):
+        origin = self.headers.get('Origin', '')
+        if origin and origin_allowed(origin):
+            self.send_header('Access-Control-Allow-Origin', origin)
+            self.send_header('Vary', 'Origin')
+
     def send_json(self, status, payload):
         body = json.dumps(payload, ensure_ascii=False).encode()
         self.send_response(status)
+        self.cors_headers()
         self.send_header('Content-Type', 'application/json; charset=utf-8')
         self.send_header('Content-Length', str(len(body)))
         self.end_headers()
