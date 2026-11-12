@@ -267,7 +267,7 @@ async function init() {
 
     const p = heroProgress();
     pS += (p - pS) * (reduce ? 1 : 1 - Math.exp(-dt * 10));
-    if (intro < 1) intro = Math.min(1, intro + dt / 1.2);
+    if (intro < 1 && !document.documentElement.classList.contains('intro-on')) intro = Math.min(1, intro + dt / 1.4);
     const ie = 1 - Math.pow(1 - intro, 3);
     const out = smooth((pS - 0.55) / 0.45);               // уход первого экрана
 

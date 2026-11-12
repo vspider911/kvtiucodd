@@ -22,6 +22,10 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+/* плавная прокрутка Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
 body {
   background: var(--bg);
   color: var(--ink);
@@ -389,7 +393,7 @@ p { text-wrap: pretty; }
   grid-area: 1 / 1; align-self: center;
   display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(24px, 4vw, 64px); align-items: center;
   --d: 1; --a: 1;                                   /* JS: смещение от текущей работы и его модуль */
-  opacity: calc(1 - var(--a) * 1.7);
+  opacity: clamp(0, calc(1 - var(--a) * 2.6), 1);
   pointer-events: none;
 }
 .work.is-active { pointer-events: auto; }
@@ -726,16 +730,6 @@ p { text-wrap: pretty; }
 .dock .btn:first-child { flex: 1; }
 @media (min-width: 768px) { .dock { display: none; } }
 
-/* ---------- Фоновое свечение ---------- */
-.aurora { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
-.aurora i { position: absolute; width: 70vmax; height: 70vmax; border-radius: 50%; }
-.aurora i:nth-child(1) { left: -25vmax; top: -20vmax; background: radial-gradient(closest-side, rgba(70, 52, 190, .32), transparent); animation: drift1 24s ease-in-out infinite alternate; }
-.aurora i:nth-child(2) { right: -30vmax; bottom: -30vmax; background: radial-gradient(closest-side, rgba(255, 150, 40, .14), transparent); animation: drift2 30s ease-in-out infinite alternate; }
-.aurora i:nth-child(3) { left: 30%; top: 40%; width: 50vmax; height: 50vmax; background: radial-gradient(closest-side, rgba(184, 178, 255, .1), transparent); animation: drift3 36s ease-in-out infinite alternate; }
-@keyframes drift1 { to { transform: translate(35vmax, 25vmax) scale(1.15); } }
-@keyframes drift2 { to { transform: translate(-30vmax, -20vmax) scale(.9); } }
-@keyframes drift3 { to { transform: translate(-25vmax, -30vmax) scale(1.2); } }
-
 /* ---------- Прогресс прокрутки ---------- */
 .page-progress {
   position: fixed; left: 0; top: 0; z-index: 25; width: 100%; height: 2px;
@@ -758,16 +752,60 @@ p { text-wrap: pretty; }
    Переходы между сценами: окно раскрывается на весь экран, уходящая сцена отъезжает назад
    ========================================================== */
 .scene-pin > .pin-inner {
-  --e: calc(1 - var(--en, 1));
-  clip-path: inset(calc(var(--e) * 16%) calc(var(--e) * 9%) round calc(var(--e) * 28px));
-  transform: scale(calc(1 - var(--lv, 0) * .14)) translateY(calc(var(--lv, 0) * -4vh));
-  opacity: calc(1 - var(--lv, 0) * .75);
+  transform: scale(calc(1 - var(--lv, 0) * .12)) translateY(calc(var(--lv, 0) * -4vh));
+  opacity: calc(1 - var(--lv, 0) * .7);
   transform-origin: 50% 0%;
-  background:
-    radial-gradient(90% 70% at 50% 0%, rgba(70, 52, 190, calc(.1 + var(--e) * .25)), transparent 70%),
-    rgba(14, 12, 34, calc(var(--e) * .9));
-  will-change: clip-path, transform;
+  will-change: transform;
 }
+/* вход в сцену: содержимое выплывает из глубины */
+.scene-pin > .pin-inner > *, .steps-sec > .wrap, .apply > .wrap {
+  --e: calc(1 - var(--en, 1));
+}
+.scene-pin > .pin-inner > .wrap, .scene-pin > .pin-inner > .final-copy {
+  transform: translateY(calc((1 - var(--en, 1)) * 12vh)) scale(calc(1 - (1 - var(--en, 1)) * .06));
+}
+
+/* ==========================================================
+   Фон-анимация, прожиг, зерно, заставка
+   ========================================================== */
+.bg-gl { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; display: block; }
+.burn-gl { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 19; pointer-events: none; visibility: hidden; display: block; }
+.grain {
+  position: fixed; inset: -50%; z-index: 45; pointer-events: none; opacity: .07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain .9s steps(6) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); } 20% { transform: translate(-3%, 2%); } 40% { transform: translate(2%, -4%); }
+  60% { transform: translate(-4%, -2%); } 80% { transform: translate(3%, 3%); } 100% { transform: translate(0, 0); }
+}
+/* у разделов прозрачный фон — сквозь них виден дым */
+.has-bg body { background: transparent; }
+html.has-bg { background: var(--bg); }
+
+.intro { display: none; }
+.intro-on .intro {
+  display: grid; place-items: center; position: fixed; inset: 0; z-index: 100;
+}
+.intro-on, .intro-on body { overflow: hidden; }
+.intro-half { position: absolute; left: 0; right: 0; height: 50.5%; background: #07061A; transition: transform .9s cubic-bezier(.76, 0, .24, 1); }
+.intro-top { top: 0; } .intro-bot { bottom: 0; }
+.intro-mark { position: relative; width: min(680px, 86vw); overflow: visible; transition: transform .9s cubic-bezier(.76, 0, .24, 1), opacity .5s; }
+.intro-mark text {
+  font: 800 120px Unbounded, sans-serif; letter-spacing: -6px;
+  fill: transparent; stroke: var(--amber); stroke-width: 1.6;
+  stroke-dasharray: 1400; stroke-dashoffset: 1400;
+  animation: intro-draw 1.5s cubic-bezier(.6, 0, .3, 1) forwards, intro-fill .5s 1.2s forwards;
+  filter: drop-shadow(0 0 18px rgba(255, 181, 71, .45));
+}
+@keyframes intro-draw { to { stroke-dashoffset: 0; } }
+@keyframes intro-fill { to { fill: var(--ink); stroke: rgba(255, 181, 71, 0); } }
+.intro-count { position: absolute; right: max(16px, 4vw); bottom: max(16px, 4vh); font: 500 13px/1 "JetBrains Mono", ui-monospace, monospace; color: var(--muted); letter-spacing: .08em; }
+.intro-count b { color: var(--ink); font-weight: 500; font-size: clamp(40px, 7vw, 96px); font-family: Unbounded, sans-serif; letter-spacing: -.04em; margin-right: 4px; }
+.intro.done .intro-top { transform: translateY(-101%); }
+.intro.done .intro-bot { transform: translateY(101%); }
+.intro.done .intro-mark { transform: scale(1.6); opacity: 0; }
+.intro.done .intro-count { opacity: 0; transition: opacity .3s; }
 
 /* ---------- Без анимаций ---------- */
 @media (prefers-reduced-motion: reduce) {
@@ -779,5 +817,6 @@ p { text-wrap: pretty; }
   .deck { gap: 16px; }
   .deck > * { grid-area: auto !important; transform: none !important; }
   .deck > *::after { display: none; }
-  .scene-pin > .pin-inner { clip-path: none; transform: none; opacity: 1; background: none; }
+  .scene-pin > .pin-inner, .scene-pin > .pin-inner > .wrap, .scene-pin > .pin-inner > .final-copy { transform: none; opacity: 1; }
+  .grain, .burn-gl { display: none; }
 }

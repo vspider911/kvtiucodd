@@ -25,7 +25,21 @@
 </script>
 </head>
 <body>
-<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<script>
+  // заставка: показываем один раз за визит, без неё — если уменьшение движения
+  (function () {
+    var seen = false; try { seen = sessionStorage.getItem('kv_intro') === '1'; } catch (e) {}
+    if (!seen && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('intro-on');
+  })();
+</script>
+<div class="intro" aria-hidden="true">
+  <div class="intro-half intro-top"></div><div class="intro-half intro-bot"></div>
+  <svg class="intro-mark" viewBox="0 0 700 140"><text x="350" y="98" text-anchor="middle">kvtiucodd</text></svg>
+  <p class="intro-count"><b>0</b>%</p>
+</div>
+<canvas class="bg-gl" aria-hidden="true"></canvas>
+<canvas class="burn-gl" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
 <div class="page-progress" aria-hidden="true"></div>
 
 <header class="top">
@@ -380,7 +394,9 @@
   <a class="btn btn-ghost" data-tg href="#contact" aria-label="Написать в Telegram">Telegram</a>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
 <script src="script.js"></script>
 <script type="module" src="scene.js"></script>
+<script type="module" src="bg.js"></script>
 </body>
 </html>

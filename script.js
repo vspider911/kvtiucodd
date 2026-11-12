@@ -17,6 +17,52 @@ const CONFIG = {
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const smooth = t => t * t * (3 - 2 * t);
 
+  /* ---------- Плавная прокрутка (как в референсе) ---------- */
+  let lenis = null;
+  if (!reduce && window.Lenis) {
+    lenis = new window.Lenis({ lerp: 0.085, wheelMultiplier: 0.95 });
+    const loop = time => { lenis.raf(time); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+    // ссылки на разделы — плавно, с учётом Lenis
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a || a.getAttribute('href').length < 2) return;
+      const target = document.querySelector(a.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      lenis.scrollTo(target, { duration: 1.6 });
+    });
+  }
+  const scrollToY = y => (lenis ? lenis.scrollTo(y, { duration: 1.2 }) : scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' }));
+
+  /* ---------- Заставка ---------- */
+  const intro = $('.intro');
+  if (document.documentElement.classList.contains('intro-on')) {
+    if (lenis) lenis.stop();
+    scrollTo(0, 0);
+    const num = $('.intro-count b', intro);
+    const t0 = performance.now(), MIN = 1700;
+    let loaded = document.readyState === 'complete';
+    addEventListener('load', () => { loaded = true; });
+    const tick = now => {
+      const k = Math.min(1, (now - t0) / MIN);
+      const shown = Math.round((loaded ? k : Math.min(k, 0.9)) * 100);
+      num.textContent = shown;
+      if (shown >= 100 || now - t0 > 4500) {
+        intro.classList.add('done');
+        try { sessionStorage.setItem('kv_intro', '1'); } catch (_) {}
+        setTimeout(() => {
+          document.documentElement.classList.remove('intro-on');
+          intro.remove();
+          if (lenis) lenis.start();
+        }, 950);
+        return;
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  } else if (intro) intro.remove();
+
   // Ссылки на мессенджеры
   $$('[data-wa]').forEach(a => {
     a.href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.message)}`;
@@ -80,7 +126,9 @@ const CONFIG = {
   const updateWorks = () => {
     const n = workEls.length;
     const p = reduce ? 0 : sectionProgress(worksSec);
-    const x = clamp((p - W_FROM) / (W_TO - W_FROM)) * (n - 1);     // 0 … n−1, дробное
+    const raw = clamp((p - W_FROM) / (W_TO - W_FROM)) * (n - 1);
+    const i0 = Math.min(n - 2, Math.floor(raw)), fr = raw - i0;
+    const x = i0 + smooth(clamp((fr - 0.32) / 0.36));               // работа стоит, смена — быстро посередине
     const active = Math.round(x);
     workEls.forEach((el, k) => {
       const d = reduce ? 0 : clamp(k - x, -1, 1);
@@ -99,7 +147,7 @@ const CONFIG = {
     const n = workEls.length; k = clamp(k, 0, n - 1);
     const total = worksSec.offsetHeight - innerHeight;
     const p = W_FROM + (k / (n - 1)) * (W_TO - W_FROM);
-    scrollTo({ top: worksSec.offsetTop + p * total, behavior: reduce ? 'auto' : 'smooth' });
+    scrollToY(worksSec.offsetTop + p * total);
   };
   worksPrev.addEventListener('click', () => goWork(workActive - 1));
   worksNext.addEventListener('click', () => goWork(workActive + 1));
