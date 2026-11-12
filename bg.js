@@ -10,12 +10,12 @@ const mobile = innerWidth < 768;
 const bgCanvas = document.querySelector('.bg-gl');
 const wipeCanvas = document.querySelector('.wipe-gl');
 const root = document.documentElement;
-const SECTIONS = ['hero', 'about', 'works', 'inside', 'steps', 'contact', 'lead']
+const SECTIONS = ['hero', 'works', 'about', 'inside', 'steps', 'contact', 'lead']
   .map(id => document.getElementById(id)).filter(Boolean);
 
 // [глубокий тон дыма, светлые прожилки] для каждого раздела
 const PALETTE = [
-  ['#15123F', '#FFB547'], ['#17123F', '#B8B2FF'], ['#22130A', '#FFB547'],
+  ['#15123F', '#FFB547'], ['#22130A', '#FFB547'], ['#17123F', '#B8B2FF'],
   ['#170C38', '#C9A7FF'], ['#260A10', '#FF6A3D'], ['#24160A', '#FFC56E'], ['#110F35', '#B8B2FF']
 ];
 
@@ -57,13 +57,13 @@ function galaxy(n) {
 }
 const SHAPES = n => [
   galaxy(n),
-  sample((x, w, h) => { x.font = '800 170px Unbounded'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('kvtiucodd', w / 2, h / 2 + 6); }, 1100, 260, n),
   sample((x) => {           // монитор и телефон
     x.lineWidth = 16; x.strokeRect(40, 40, 440, 280); x.fillRect(220, 330, 80, 40); x.fillRect(170, 366, 180, 14);
     x.lineWidth = 10; [[80, 90, 260], [80, 130, 180], [80, 250, 120]].forEach(([a, b, c]) => { x.beginPath(); x.moveTo(a, b); x.lineTo(a + c, b); x.stroke(); });
     x.fillRect(80, 175, 150, 50);
     x.lineWidth = 14; x.strokeRect(460, 150, 130, 240); x.fillRect(485, 330, 80, 30);
   }, 640, 420, n),
+  sample((x, w, h) => { x.font = '800 170px Unbounded'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('kvtiucodd', w / 2, h / 2 + 6); }, 1100, 260, n),
   sample((x) => {           // сетка онлайн-записи
     x.lineWidth = 12;
     for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) {
@@ -253,7 +253,7 @@ async function init() {
     swarm.rotation.y = reduce ? 0 : Math.sin(t * 0.3) * 0.25;
     swarm.rotation.x = reduce ? 0 : Math.cos(t * 0.23) * 0.12;
     // на первом экране рой прячется (там своя 3D-сцена), дальше проявляется
-    fade = Math.min(1, Math.max(0, sS * 1.6 - 0.2));
+    fade = Math.min(1, Math.max(0, (sS - 1.3) * 1.6));   // рой — с «Обо мне», на первом экране и в работах своя лента
     pMat.uniforms.uAlpha.value = lay.a * fade; pMat.uniforms.uTime.value = t;
 
     renderer.clear();
@@ -262,7 +262,7 @@ async function init() {
 
     // световая волна на стыке: q 0.12…0.88 → шторка поднимается, закрывает экран и уходит вверх
     if (wipeR) {
-      const r = w.k > 0 ? Math.min(1, Math.max(0, (w.q - 0.12) / 0.76)) : 0;
+      const r = w.k > 0 && !('nowipe' in SECTIONS[w.k].dataset) ? Math.min(1, Math.max(0, (w.q - 0.12) / 0.76)) : 0;
       const on = r > 0 && r < 1;
       if (on !== wipeVisible) { wipeCanvas.style.visibility = on ? 'visible' : 'hidden'; wipeVisible = on; }
       if (on) {

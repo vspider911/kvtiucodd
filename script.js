@@ -110,59 +110,72 @@ const CONFIG = {
     return total > 0 ? clamp(-r.top / total) : 0;
   };
 
-  /* ---------- Первый экран: текст уходит по мере прокрутки ---------- */
+  /* ---------- Первый экран + работы: одна сцена, одна 3D-лента ----------
+     Фазы по прокрутке внутри #hero (y — сколько прокручено):
+     A — первый экран; M — лента раскручивается и встаёт в центр; T — лента едет вбок по работам. */
   const hero = $('.hero');
+  const reelUI = $('.reel-ui', hero);
+  const worksAnchor = $('#works');
+  const infos = $$('.reel-info', hero), phones = $$('.reel-phone', hero);
+  const hit = $('.reel-hit', hero), reelNum = $('.reel-num', hero), reelFb = $('.reel-fallback', hero);
+  const worksNum = $('.works-count b', hero), worksBar = $('.works-bar i', hero);
+  const worksPrev = $('.works-prev', hero), worksNext = $('.works-next', hero);
+  const N_WORKS = infos.length;
+  const TL = { A: 0, M: 0, T: 0, k: 0, box: { cx: 0, cy: 0, fw: 0 } };
+  window.__reel = TL;
+  let reelActive = -1, pinnedWork = 0;
+  const layoutHero = () => {
+    const vh = innerHeight, vw = innerWidth, mob = vw < 900;
+    TL.A = vh * 0.8; TL.M = vh * 1.0; TL.T = vh * (mob ? 2.1 : 2.4);
+    hero.style.height = `${vh + TL.A + TL.M + TL.T + vh * 0.2}px`;
+    worksAnchor.style.top = `${TL.A + TL.M}px`;
+    const head = mob ? 56 : 64;
+    const fw = mob ? Math.min(vw * 0.86, (vh - 380) * 1.55) : Math.min(760, vw * 0.76, (vh - 460) * 1.5);
+    const sh = fw * 780 / 1024;
+    // лента с подписями — по центру между заголовком и стрелками
+    const top = head + (mob ? 70 : 92), bottom = vh - (vw < 768 ? 76 : 0) - (mob ? 80 : 84);
+    const block = sh + 8 + (mob ? 175 : 140);
+    TL.box = { cx: vw / 2, cy: top + Math.max(0, (bottom - top - block) / 2) + sh / 2, fw };
+    reelUI.style.setProperty('--fw', `${fw.toFixed(1)}px`);
+    reelUI.style.setProperty('--cx', `${TL.box.cx.toFixed(1)}px`);
+    reelUI.style.setProperty('--cy', `${TL.box.cy.toFixed(1)}px`);
+  };
   const updateHero = () => {
-    hero.style.setProperty('--hero', reduce ? 0 : sectionProgress(hero).toFixed(3));
-  };
-
-  /* ---------- Работы: лента едет вбок при прокрутке вниз ---------- */
-  const worksSec = $('#works');
-  const reel = $('.reel', worksSec), reelTrack = $('.reel-track', worksSec);
-  const reelCards = $$('.reel-card', worksSec);
-  const worksNum = $('.works-count b', worksSec), worksBar = $('.works-bar i', worksSec);
-  const worksPrev = $('.works-prev', worksSec), worksNext = $('.works-next', worksSec);
-  const R_FROM = 0.04, R_TO = 0.96;           // участок сцены, на котором едет лента
-  let reelShift = 0, reelActive = -1;
-  const layoutReel = () => {
-    reelTrack.style.setProperty('--tx', '0px');
-    reelShift = Math.max(0, reelTrack.scrollWidth - reel.clientWidth);
-    // длина сцены под ширину ленты: 1 px вбок ≈ 1,15 px прокрутки
-    worksSec.style.height = `${innerHeight + reelShift * 1.15 / (R_TO - R_FROM)}px`;
-  };
-  const updateWorks = () => {
-    const p = reduce ? 0 : sectionProgress(worksSec);
-    const k = clamp((p - R_FROM) / (R_TO - R_FROM));
-    const tx = -k * reelShift;
-    reelTrack.style.setProperty('--tx', `${tx.toFixed(1)}px`);
-    $$('.reel-perf', worksSec).forEach(el => el.style.setProperty('--tx', `${tx.toFixed(1)}px`));
-    const cx = innerWidth / 2;
-    let best = 0, bestD = 1e9;
-    reelCards.forEach((c, i) => {
-      const r = c.getBoundingClientRect();
-      const off = (r.left + r.width / 2 - cx) / innerWidth;          // −1 … 1 от центра
-      const a = Math.min(1.2, Math.abs(off));
-      c.style.setProperty('--ry', `${clamp(off * -42, -40, 40).toFixed(2)}deg`);
-      c.style.setProperty('--tz', `${(-a * 260).toFixed(0)}px`);
-      c.style.setProperty('--sc', (1 - a * 0.06).toFixed(3));
-      c.style.setProperty('--op', clamp(1.15 - a * 0.85, 0.15, 1).toFixed(3));
-      c.style.setProperty('--hl', clamp(1 - a * 2.6).toFixed(3));    // «в фокусе»
-      if (Math.abs(off) < bestD) { bestD = Math.abs(off); best = i; }
-    });
-    if (best !== reelActive) {
-      reelActive = best;
-      worksNum.textContent = String(best + 1).padStart(2, '0');
-      worksPrev.disabled = best === 0; worksNext.disabled = best === reelCards.length - 1;
+    const y = -hero.getBoundingClientRect().top;
+    const heroFade = reduce ? (y > TL.A * 0.6 ? 1 : 0) : clamp((y - TL.A * 0.45) / (TL.A * 0.75));
+    hero.style.setProperty('--hero', heroFade.toFixed(3));
+    hero.classList.toggle('copy-gone', heroFade > 0.98);   // невидимые кнопки не должны ловить клики
+    const ru = reduce ? (y >= TL.A + TL.M * 0.5 ? 1 : 0) : clamp((y - TL.A - TL.M * 0.72) / (TL.M * 0.28));
+    reelUI.style.setProperty('--ru', ru.toFixed(3));
+    reelUI.classList.toggle('live', ru > 0.5);
+    // лента по работам: на каждой работе стоит, смена — быстро посередине
+    let kk;
+    if (reduce) kk = pinnedWork;
+    else {
+      const raw = clamp((y - TL.A - TL.M) / TL.T) * (N_WORKS - 1);
+      const i0 = Math.min(N_WORKS - 2, Math.floor(raw)), fr = raw - i0;
+      kk = i0 + smooth(clamp((fr - 0.25) / 0.5));
     }
-    worksBar.style.setProperty('--wp', (0.25 + k * 0.75).toFixed(3));
+    TL.k = kk;
+    infos.forEach((el, i) => el.style.setProperty('--v', clamp(1 - Math.abs(kk - i) * 2.2).toFixed(3)));
+    phones.forEach((el, i) => el.style.setProperty('--v', clamp(1 - Math.abs(kk - i) * 2.2).toFixed(3)));
+    const act = Math.round(kk);
+    if (act !== reelActive) {
+      reelActive = act;
+      const info = infos[act];
+      infos.forEach((el, i) => { el.classList.toggle('is-active', i === act); el.inert = i !== act; });
+      hit.href = info.dataset.url; hit.setAttribute('aria-label', `Открыть сайт «${info.dataset.name}»`);
+      reelNum.textContent = String(act + 1).padStart(2, '0');
+      reelFb.src = info.dataset.img;
+      worksNum.textContent = String(act + 1).padStart(2, '0');
+      worksPrev.disabled = act === 0; worksNext.disabled = act === N_WORKS - 1;
+    }
+    worksBar.style.setProperty('--wp', ((kk + 1) / N_WORKS).toFixed(3));
   };
-  // стрелки: доехать до нужного кадра
   const goWork = i => {
-    i = clamp(i, 0, reelCards.length - 1);
-    const c = reelCards[i];
-    const target = (c.offsetLeft + c.offsetWidth / 2 - reel.clientWidth / 2) / (reelShift || 1);
-    const p = R_FROM + clamp(target) * (R_TO - R_FROM);
-    scrollToY(worksSec.offsetTop + p * (worksSec.offsetHeight - innerHeight));
+    i = clamp(i, 0, N_WORKS - 1);
+    if (reduce) { pinnedWork = i; updateHero(); return; }
+    scrollToY(hero.offsetTop + TL.A + TL.M + TL.T * (i / (N_WORKS - 1)));
   };
   worksPrev.addEventListener('click', () => goWork(reelActive - 1));
   worksNext.addEventListener('click', () => goWork(reelActive + 1));
@@ -298,13 +311,12 @@ const CONFIG = {
     updateShells();
     updateScrubs();
     updatePins();
-    updateWorks();
   };
   const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
   addEventListener('scroll', onScroll, { passive: true });
 
   const relayout = () => {
-    layoutReel();
+    layoutHero();
     pins.forEach(p => { p.last = -1; });
     update();
     moveBar(hoverLink || spyLinks[spyActive]);   // ширина ссылок меняется после загрузки шрифта

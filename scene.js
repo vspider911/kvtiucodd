@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
-/* 3D-сцена первого экрана: лента из скриншотов работ, вихрь-галактика и парящие кубы. */
+/* 3D-сцена первого экрана и работ.
+   Одна и та же лента-плёнка: на первом экране крутится петлёй, при прокрутке раскручивается,
+   встаёт в центр и превращается в ленту работ, которая едет вбок (window.__reel из script.js). */
 
 const canvas = document.querySelector('.scene');
 const hero = document.querySelector('.hero');
@@ -23,30 +25,43 @@ function dotTexture() {
   return new THREE.CanvasTexture(c);
 }
 
-/* Лента: все скриншоты в один ряд, как кадры на плёнке */
+/* Плёнка: 4 кадра в ряд, сверху и снизу перфорация.
+   Кадр 1024×780 текселей: скриншот 1000×616 по центру, полосы перфорации по 70 px. */
+const TEX_FW = 1024, TEX_FH = 780, PERF = 70, GAP = 12;
 function filmTexture(imgs) {
-  const FW = 1024, FH = 640, GAP = 14;
-  const c = document.createElement('canvas'); c.width = FW * imgs.length; c.height = FH;
+  const c = document.createElement('canvas'); c.width = TEX_FW * imgs.length; c.height = TEX_FH;
   const ctx = c.getContext('2d');
-  ctx.fillStyle = '#0A0918'; ctx.fillRect(0, 0, c.width, c.height);
+  ctx.fillStyle = '#0B0A1E'; ctx.fillRect(0, 0, c.width, c.height);
+  // перфорация
+  ctx.fillStyle = 'rgba(243,241,255,.16)';
+  for (let x = 14; x < c.width; x += 44) {
+    ctx.beginPath(); ctx.roundRect(x, 22, 24, 26, 4); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(x, TEX_FH - 48, 24, 26, 4); ctx.fill();
+  }
   imgs.forEach((img, i) => {
-    const x = i * FW + GAP, y = GAP, w = FW - GAP * 2, h = FH - GAP * 2;
-    const s = Math.max(w / img.width, h / img.height);
-    const sw = w / s, sh = h / s;
+    const x = i * TEX_FW + GAP, y = PERF + GAP, w = TEX_FW - GAP * 2, h = TEX_FH - PERF * 2 - GAP * 2;
+    const sc = Math.max(w / img.width, h / img.height);
+    const sw = w / sc, sh = h / sc;
     ctx.drawImage(img, (img.width - sw) / 2, 0, sw, sh, x, y, w, h);
     ctx.strokeStyle = 'rgba(184,178,255,.35)'; ctx.lineWidth = 2; ctx.strokeRect(x, y, w, h);
   });
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   t.wrapS = THREE.RepeatWrapping;
-  t.repeat.set(2, 1);                       // по ленте — два круга кадров
   return t;
 }
 
-/* Замкнутая лента с одним полным перекрутом */
-function ribbonGeometry(width, segs = 360) {
-  const pos = [], uv = [], idx = [];
-  const P = t => new THREE.Vector3(Math.cos(t) * 4.7, Math.sin(2 * t) * 1.15 + Math.sin(t) * 0.9, Math.sin(t) * 3.1);
+/* Лента: в атрибутах — позиция в петле (position), место вдоль ленты (aU) и сторона (aV).
+   Длина петли подогнана под длину 4 кадров, чтобы кадры не растягивались ни в петле, ни в ленте. */
+const STRIP_W = 2.5;                                  // ширина плёнки (вместе с перфорацией)
+const FRAME_LEN = STRIP_W * TEX_FW / TEX_FH;          // длина одного кадра
+const STRIP_LEN = FRAME_LEN * 4;
+function ribbonGeometry(segs = 480) {
+  const P0 = t => new THREE.Vector3(Math.cos(t) * 2.4, Math.sin(2 * t) * 0.6 + Math.sin(t) * 0.5, Math.sin(t) * 1.6);
+  let len = 0; for (let i = 0; i < 2000; i++) len += P0((i + 1) / 2000 * Math.PI * 2).distanceTo(P0(i / 2000 * Math.PI * 2));
+  const k = STRIP_LEN / len;
+  const P = t => P0(t).multiplyScalar(k);
+  const pos = [], au = [], av = [], idx = [];
   const up = new THREE.Vector3(0, 1, 0);
   for (let i = 0; i <= segs; i++) {
     const u = i / segs, t = u * Math.PI * 2;
@@ -54,17 +69,16 @@ function ribbonGeometry(width, segs = 360) {
     const tan = P(t + 0.001).sub(P(t - 0.001)).normalize();
     const b = new THREE.Vector3().crossVectors(tan, up).normalize();
     const n = new THREE.Vector3().crossVectors(b, tan).normalize();
-    const twist = t;                                                  // 2π на круг: шов совпадает
-    const w = n.multiplyScalar(Math.cos(twist)).add(b.multiplyScalar(Math.sin(twist))).multiplyScalar(width / 2);
+    const w = n.multiplyScalar(Math.cos(t)).add(b.multiplyScalar(Math.sin(t))).multiplyScalar(STRIP_W / 2);
     pos.push(p.x + w.x, p.y + w.y, p.z + w.z, p.x - w.x, p.y - w.y, p.z - w.z);
-    uv.push(u, 1, u, 0);
+    au.push(u, u); av.push(1, -1);
     if (i < segs) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
   }
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  g.setAttribute('aU', new THREE.Float32BufferAttribute(au, 1));
+  g.setAttribute('aV', new THREE.Float32BufferAttribute(av, 1));
   g.setIndex(idx);
-  g.computeVertexNormals();
   return g;
 }
 
@@ -95,10 +109,37 @@ async function init() {
   /* ---------- Лента из скриншотов ---------- */
   const film = filmTexture(imgs);
   film.anisotropy = renderer.capabilities.getMaxAnisotropy();
-  const ribbon = new THREE.Mesh(
-    ribbonGeometry(2.5),
-    new THREE.MeshBasicMaterial({ map: film, side: THREE.DoubleSide, toneMapped: false, color: 0xE4E2F2 })
-  );
+  // Морфинг в вершинном шейдере: петля (position) → дуга ленты работ. Раскручивается от одного конца к другому.
+  const ribbonMat = new THREE.ShaderMaterial({
+    uniforms: {
+      map: { value: film }, uMorph: { value: 0 }, uOffset: { value: 0 }, uR: { value: 4.8 },
+      uL: { value: STRIP_LEN }, uW: { value: STRIP_W }, uTexShift: { value: 0 }
+    },
+    vertexShader: /* glsl */`
+      attribute float aU; attribute float aV;
+      uniform float uMorph, uOffset, uR, uL, uW, uTexShift;
+      varying vec2 vUv; varying float vShade;
+      void main() {
+        float m = clamp(uMorph * 1.7 - aU * 0.7, 0.0, 1.0); m = m * m * (3.0 - 2.0 * m);
+        float s = aU * uL - uOffset;
+        float phi = s / uR;
+        vec3 b = vec3(uR * sin(phi), aV * uW * 0.5, uR * cos(phi) - uR);   // дуга: края уходят в глубину
+        vec3 p = mix(position, b, m);
+        vUv = vec2(aU + uTexShift, aV * 0.5 + 0.5);
+        vShade = mix(1.0, clamp(cos(phi) * 1.6 - 0.55, 0.22, 1.0), m);    // боковые кадры притушены
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+      }`,
+    fragmentShader: /* glsl */`
+      uniform sampler2D map; varying vec2 vUv; varying float vShade;
+      void main() {
+        vec4 c = texture2D(map, vUv);
+        gl_FragColor = vec4(c.rgb * 0.92 * vShade, 1.0);
+        #include <colorspace_fragment>
+      }`,
+    side: THREE.DoubleSide
+  });
+  const ribbon = new THREE.Mesh(ribbonGeometry(), ribbonMat);
+  ribbon.frustumCulled = false;
   const pivot = new THREE.Group(); pivot.add(ribbon); scene.add(pivot);
 
   // Свечение за лентой
@@ -205,11 +246,12 @@ async function init() {
     const visH = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
     const visW = visH * camera.aspect;
     layout.mobile = w < 900 || camera.aspect < 0.85;
+    layout.visH = visH; layout.h = h;
     if (layout.mobile) {
-      layout.s = Math.min(visW / 11.5, visH * 0.36 / 7);
+      layout.s = Math.min(visW / 6.4, visH * 0.36 / 4.2);
       layout.x = 0; layout.y = visH * 0.2;
     } else {
-      layout.s = Math.min(visW * 0.47 / 9.4, visH * 0.9 / 7);
+      layout.s = Math.min(visW * 0.47 / 5.6, visH * 0.86 / 4.2);
       layout.x = visW * 0.24; layout.y = visH * 0.03;
     }
   }
@@ -217,11 +259,8 @@ async function init() {
   addEventListener('resize', resize);
 
   /* ---------- Анимация ---------- */
-  const heroProgress = () => {
-    const r = hero.getBoundingClientRect();
-    const total = r.height - innerHeight;
-    return total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
-  };
+  const heroY = () => -hero.getBoundingClientRect().top;
+  const wrapPi = a => a - Math.PI * 2 * Math.round(a / (Math.PI * 2));
   const smooth = t => (t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t));
 
   let tmx = 0, tmy = 0, mx = 0, my = 0;
@@ -254,7 +293,7 @@ async function init() {
   canvas.addEventListener('pointercancel', endDrag);
 
   const clock = new THREE.Clock();
-  let pS = heroProgress();
+  let ySm = heroY(), texShift = 0;
   let intro = reduceMQ.matches ? 1 : 0;
 
   function frame() {
@@ -265,41 +304,58 @@ async function init() {
     const t = reduce ? 20 : clock.elapsedTime;
     const tilt = reduce ? 0 : 1;
 
-    const p = heroProgress();
-    pS += (p - pS) * (reduce ? 1 : 1 - Math.exp(-dt * 10));
+    const R = window.__reel || { A: innerHeight * 0.8, M: innerHeight, T: innerHeight * 2.4, k: 0, box: { cx: innerWidth / 2, cy: innerHeight / 2, fw: 600 } };
+    const y = heroY();
+    ySm += (y - ySm) * (reduce ? 1 : 1 - Math.exp(-dt * 14));
+    const pS = Math.min(1, Math.max(0, ySm / R.A));                          // первый экран 0…1
+    const mo = reduce ? (y > R.A + R.M * 0.5 ? 1 : 0) : Math.min(1, Math.max(0, (ySm - R.A) / R.M)); // раскручивание
+    const e = smooth(Math.min(1, mo * 1.15));                                // перелёт в центр
     if (intro < 1 && !document.documentElement.classList.contains('intro-on')) intro = Math.min(1, intro + dt / 1.4);
     const ie = 1 - Math.pow(1 - intro, 3);
-    const out = smooth((pS - 0.55) / 0.45);               // уход первого экрана
+    const out = e;
 
     mx += (tmx - mx) * (1 - Math.exp(-dt * 4));
     my += (tmy - my) * (1 - Math.exp(-dt * 4));
     if (!dragging) { spin += spinVel; spinVel *= reduce ? 0 : 0.95; }
     boost = Math.max(0, boost - dt * 1.6);
+    canvas.style.cursor = mo > 0.3 ? 'default' : '';
 
-    // Лента: медленно вращается сама, быстрее — от прокрутки
-    pivot.position.set(layout.x - mx * 0.3 * tilt, layout.y + Math.sin(t * 0.9) * 0.12 * tilt, -10 * (1 - ie));
-    pivot.scale.setScalar(layout.s * (0.7 + 0.3 * ie) * (1 + pS * 0.35 + Math.sin(boost * Math.PI) * 0.05));
-    pivot.rotation.set(
-      0.42 + my * 0.18 * tilt + pS * 0.5,
-      t * 0.12 * tilt + pS * 3.2 + spin + mx * 0.25 * tilt - 1.4 * (1 - ie),
-      -0.34 + pS * 0.3
-    );
-    if (!reduce) film.offset.x = (t * 0.012) % 1;         // кадры едут по ленте
+    // Петля на первом экране
+    const hx = layout.x - mx * 0.3 * tilt, hy = layout.y + Math.sin(t * 0.9) * 0.12 * tilt, hz = -10 * (1 - ie);
+    const hs = layout.s * (0.7 + 0.3 * ie) * (1 + pS * 0.25 + Math.sin(boost * Math.PI) * 0.05);
+    const hrx = 0.42 + my * 0.18 * tilt + pS * 0.4;
+    const hry = wrapPi(t * 0.12 * tilt + pS * 2.2 + spin + mx * 0.25 * tilt - 1.4 * (1 - ie));
+    const hrz = -0.34 + pS * 0.25;
+    // Лента работ: в центре, кадр размером с рамку подписи (fw px)
+    const pxPerWorld = layout.h / layout.visH;
+    const rs = R.box.fw / (FRAME_LEN * pxPerWorld);
+    const ry = (layout.h / 2 - R.box.cy) / pxPerWorld;
+    pivot.position.set(hx + (0 - hx) * e, hy + (ry - hy) * e, hz * (1 - e));
+    pivot.scale.setScalar(hs + (rs - hs) * e);
+    pivot.rotation.set(hrx * (1 - e) + my * 0.015 * tilt * e, hry * (1 - e) + mx * 0.02 * tilt * e, hrz * (1 - e));
+
+    // кадры едут по петле, к ленте работ встают на место
+    if (!reduce) texShift = (t * 0.012) % 1;
+    const ts = texShift + (Math.round(texShift) - texShift) * smooth(Math.min(1, mo * 2));
+    ribbonMat.uniforms.uTexShift.value = ts;
+    ribbonMat.uniforms.uMorph.value = mo;
+    ribbonMat.uniforms.uOffset.value = STRIP_LEN * (R.k + 0.5) / 4;           // кадр R.k — в центре
+    ribbonMat.uniforms.uR.value = layout.mobile ? 3.6 : 4.8;
 
     glow.position.set(pivot.position.x, pivot.position.y, pivot.position.z - 3);
     glow.scale.setScalar(layout.s * 15 * (1 + boost * 0.3));
-    glowMat.opacity = (0.3 + boost * 0.35) * ie * (1 - out * 0.6);
+    glowMat.opacity = (0.3 + boost * 0.35) * ie * (1 - out * 0.7);
 
-    points.rotation.y = t * 0.025 * tilt + pS * 0.9;
-    points.position.y = pS * 3;
+    points.rotation.y = t * 0.025 * tilt + pS * 0.9 + mo * 0.6;
+    points.position.y = pS * 1.5;
 
-    const cx = layout.x, cy = layout.y;
+    const cx = layout.x * (1 - e), cy = layout.y + (ry - layout.y) * e;
     vortex.position.set(cx - mx * 0.25 * tilt, cy + my * 0.15 * tilt, -7.5 - 9 * (1 - ie));
     vortex.scale.setScalar(layout.s * (layout.mobile ? 46 : 34) * (1 + boost * 0.06));
     vortex.rotation.set(-0.32 + my * 0.05 * tilt, mx * 0.06 * tilt, 0);
     vortexMat.uniforms.uTime.value = t;
-    vortexMat.uniforms.uTwist.value = -pS * 3 - spin * 0.25;
-    vortexMat.uniforms.uOpacity.value = ie * (0.8 - out * 0.35 + boost * 0.3);
+    vortexMat.uniforms.uTwist.value = -pS * 2 - mo * 2 - (R.k || 0) * 0.8 - spin * 0.25;
+    vortexMat.uniforms.uOpacity.value = ie * (0.8 - out * 0.45 + boost * 0.3);
 
     for (let i = 0; i < cubes.length; i++) {
       const c = cubes[i];
