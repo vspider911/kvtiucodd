@@ -3,12 +3,12 @@ import * as THREE from 'three';
 /* Фон всей страницы как одна анимация:
    1) живой дым, меняет цвет под раздел;
    2) рой частиц, перетекает из фигуры в фигуру при прокрутке;
-   3) «прожиг» экрана огненной кромкой на стыке разделов. */
+   3) световая волна: на стыке разделов через экран проходит светящаяся волна-шторка. */
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const mobile = innerWidth < 768;
 const bgCanvas = document.querySelector('.bg-gl');
-const burnCanvas = document.querySelector('.burn-gl');
+const wipeCanvas = document.querySelector('.wipe-gl');
 const root = document.documentElement;
 const SECTIONS = ['hero', 'about', 'works', 'inside', 'steps', 'contact', 'lead']
   .map(id => document.getElementById(id)).filter(Boolean);
@@ -85,14 +85,14 @@ async function init() {
   const make = cv => { try { return new THREE.WebGLRenderer({ canvas: cv, antialias: false, alpha: true, premultipliedAlpha: true }); } catch (e) { return null; } };
   const renderer = make(bgCanvas);
   if (!renderer) return;
-  const burnR = reduce ? null : make(burnCanvas);
+  const wipeR = reduce ? null : make(wipeCanvas);
   await document.fonts.load('800 170px Unbounded', 'kvtiucodd 123').catch(() => {});
 
   const BG_DPR = mobile ? 0.5 : 0.75;
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2) * BG_DPR);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.autoClear = false;
-  if (burnR) burnR.setPixelRatio(Math.min(devicePixelRatio, 2) * (mobile ? 0.5 : 0.7));
+  if (wipeR) wipeR.setPixelRatio(Math.min(devicePixelRatio, 2) * (mobile ? 0.6 : 0.8));
 
   /* ---------- Дым ---------- */
   const smokeMat = new THREE.ShaderMaterial({
@@ -158,31 +158,38 @@ async function init() {
   const cam = new THREE.PerspectiveCamera(50, 1, 0.1, 20); cam.position.z = 3;
 
   /* ---------- Прожиг ---------- */
-  let burnMat, burnScene;
-  if (burnR) {
-    burnMat = new THREE.ShaderMaterial({
-      uniforms: { uIn: { value: 0 }, uOut: { value: 0 }, uTime: { value: 0 }, uRes: { value: new THREE.Vector2() }, uSeed: { value: 0 } },
+  /* ---------- Световая волна на стыке разделов ---------- */
+  let wipeMat, wipeScene;
+  if (wipeR) {
+    wipeMat = new THREE.ShaderMaterial({
+      uniforms: { uIn: { value: 0 }, uOut: { value: 0 }, uTime: { value: 0 }, uRes: { value: new THREE.Vector2() }, uDir: { value: 1 } },
       vertexShader: FULL_VS,
       fragmentShader: /* glsl */`
         precision highp float;
-        uniform float uIn, uOut, uTime, uSeed; uniform vec2 uRes;
+        uniform float uIn, uOut, uTime, uDir; uniform vec2 uRes;
         ${NOISE}
         void main() {
-          vec2 p = gl_FragCoord.xy / uRes.y;
-          float n1 = fbm(p * 2.4 + uSeed), n2 = fbm(p * 2.4 + uSeed + 17.3);
-          float a, e;
-          if (uOut <= 0.0) { float k = uIn * 1.3 - 0.15; a = smoothstep(k + 0.006, k - 0.006, n1); e = exp(-pow((n1 - k) / 0.016, 2.0)); }
-          else { float k = uOut * 1.3 - 0.15; a = smoothstep(k - 0.006, k + 0.006, n2); e = exp(-pow((n2 - k) / 0.016, 2.0)); }
-          float glowN = exp(-pow((max(n1, n2) * 0.0 + (uOut <= 0.0 ? n1 : n2) - (uOut <= 0.0 ? uIn : uOut) * 1.3 + 0.15) / 0.07, 2.0));
-          vec3 ash = vec3(0.003, 0.0027, 0.009) + vec3(0.9, 0.3, 0.08) * glowN * 0.35 * a;
-          vec3 fire = mix(vec3(0.95, 0.28, 0.08), vec3(1.0, 0.86, 0.55), e);
-          vec3 c = mix(ash, fire, clamp(e * 1.1, 0.0, 1.0));
-          float alpha = max(a, e);
-          gl_FragColor = vec4(c * alpha, alpha);
+          vec2 uv = gl_FragCoord.xy / uRes;
+          float x = uv.x, y = uv.y;
+          // волнистая кромка: две синусоиды и немного шума, всё живое
+          float wave = sin(x * 7.5 + uTime * 1.7) * 0.03 + sin(x * 16.0 - uTime * 2.4) * 0.012 + (noise(vec2(x * 5.0, uTime * 0.6)) - 0.5) * 0.04;
+          float a, d;
+          if (uOut <= 0.0) { float L = uIn * 1.22 - 0.11 + wave; a = smoothstep(L + 0.003, L - 0.003, y); d = y - L; }
+          else             { float L = uOut * 1.22 - 0.11 + wave; a = smoothstep(L - 0.003, L + 0.003, y); d = y - L; }
+          vec3 lilac = vec3(0.48, 0.45, 1.0), amber = vec3(1.0, 0.46, 0.06);
+          vec3 edge = mix(lilac, amber, smoothstep(0.1, 0.9, x + sin(uTime * 0.8) * 0.15));
+          float core = exp(-pow(d / 0.006, 2.0));
+          float halo = exp(-pow(d / 0.05, 2.0)) * 0.55;
+          // шторка: тёмная, с лёгкими вертикальными бликами
+          float streak = smoothstep(0.75, 1.0, noise(vec2(x * 60.0, y * 2.0 + uTime))) * 0.06;
+          vec3 cover = vec3(0.003, 0.0027, 0.009) + edge * (streak + exp(-abs(d) * 9.0) * 0.12);
+          vec3 col = cover * a + edge * (core * 1.6 + halo) + vec3(1.0) * core * 0.35;
+          float alpha = clamp(max(a, core + halo * 0.7), 0.0, 1.0);
+          gl_FragColor = vec4(col, alpha);
         }`,
       transparent: true, depthTest: false, depthWrite: false
     });
-    burnScene = new THREE.Scene(); burnScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), burnMat));
+    wipeScene = new THREE.Scene(); wipeScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), wipeMat));
   }
 
   /* ---------- Размеры ---------- */
@@ -195,7 +202,7 @@ async function init() {
     const visH = 2 * cam.position.z * Math.tan(THREE.MathUtils.degToRad(cam.fov / 2)), visW = visH * cam.aspect;
     if (w < 900) { lay.x = 0; lay.y = visH * 0.12; lay.s = Math.min(visW * 0.44, visH * 0.26); lay.a = 0.32; }
     else { lay.x = visW * 0.2; lay.y = 0; lay.s = Math.min(visW * 0.24, visH * 0.38); lay.a = 0.42; }
-    if (burnR) { burnR.setSize(w, h, false); burnMat.uniforms.uRes.value.copy(burnR.getDrawingBufferSize(new THREE.Vector2())); }
+    if (wipeR) { wipeR.setSize(w, h, false); wipeMat.uniforms.uRes.value.copy(wipeR.getDrawingBufferSize(new THREE.Vector2())); }
   }
   resize(); addEventListener('resize', resize);
 
@@ -215,7 +222,7 @@ async function init() {
   const cDeep = new THREE.Color(), cWisp = new THREE.Color(), tmpA = new THREE.Color(), tmpB = new THREE.Color();
 
   const clock = new THREE.Clock();
-  let sS = where().s, fade = 0, burnVisible = false;
+  let sS = where().s, fade = 0, wipeVisible = false;
   function frame() {
     requestAnimationFrame(frame);
     const dt = Math.min(clock.getDelta(), 0.05);
@@ -253,17 +260,16 @@ async function init() {
     renderer.render(quadScene, ortho);
     renderer.render(pScene, cam);
 
-    // прожиг на стыке разделов: q 0.12…0.88 → выгорает, полностью закрывает, выгорает обратно
-    if (burnR) {
+    // световая волна на стыке: q 0.12…0.88 → шторка поднимается, закрывает экран и уходит вверх
+    if (wipeR) {
       const r = w.k > 0 ? Math.min(1, Math.max(0, (w.q - 0.12) / 0.76)) : 0;
       const on = r > 0 && r < 1;
-      if (on !== burnVisible) { burnCanvas.style.visibility = on ? 'visible' : 'hidden'; burnVisible = on; }
+      if (on !== wipeVisible) { wipeCanvas.style.visibility = on ? 'visible' : 'hidden'; wipeVisible = on; }
       if (on) {
-        burnMat.uniforms.uIn.value = r < 0.5 ? r * 2 : 1;
-        burnMat.uniforms.uOut.value = r < 0.5 ? 0 : (r - 0.5) * 2;
-        burnMat.uniforms.uSeed.value = w.k * 7.3;
-        burnMat.uniforms.uTime.value = t;
-        burnR.render(burnScene, ortho);
+        wipeMat.uniforms.uIn.value = r < 0.5 ? r * 2 : 1;
+        wipeMat.uniforms.uOut.value = r < 0.5 ? 0 : (r - 0.5) * 2;
+        wipeMat.uniforms.uTime.value = t;
+        wipeR.render(wipeScene, ortho);
       }
     }
   }

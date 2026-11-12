@@ -38,7 +38,7 @@
   <p class="intro-count"><b>0</b>%</p>
 </div>
 <canvas class="bg-gl" aria-hidden="true"></canvas>
-<canvas class="burn-gl" aria-hidden="true"></canvas>
+<canvas class="wipe-gl" aria-hidden="true"></canvas>
 <div class="grain" aria-hidden="true"></div>
 <div class="page-progress" aria-hidden="true"></div>
 
@@ -141,8 +141,8 @@
     </div>
   </section>
 
-  <!-- 3. Работы: листалка -->
-  <section class="scene-pin works" id="works" style="--len:4.6" aria-labelledby="works-title">
+  <!-- 3. Работы: лента с прокруткой вбок -->
+  <section class="scene-pin works" id="works" style="--len:4" aria-labelledby="works-title">
     <div class="pin-inner works-inner">
       <div class="wall" aria-hidden="true"><img src="img/works/tekstura-d.webp" alt="" width="1000" height="625"><img src="img/works/freya-d.webp" alt="" width="1000" height="625"><img src="img/works/zerno-d.webp" alt="" width="1000" height="625"><img src="img/works/techbox-d.webp" alt="" width="1000" height="625"><img src="img/works/freya-d.webp" alt="" width="1000" height="625"><img src="img/works/techbox-d.webp" alt="" width="1000" height="625"><img src="img/works/tekstura-d.webp" alt="" width="1000" height="625"><img src="img/works/zerno-d.webp" alt="" width="1000" height="625"><img src="img/works/zerno-d.webp" alt="" width="1000" height="625"><img src="img/works/tekstura-d.webp" alt="" width="1000" height="625"><img src="img/works/techbox-d.webp" alt="" width="1000" height="625"><img src="img/works/freya-d.webp" alt="" width="1000" height="625"></div>
 
@@ -151,71 +151,75 @@
         <p data-fade>Четыре сайта, сделанных с&nbsp;нуля. В&nbsp;каждом можно записаться или посмотреть цены.</p>
       </div>
 
-      <div class="wrap work-list">
-        <article class="work" style="--i:0">
-          <a class="mock" href="https://vspider911.github.io/coffeDemo/" target="_blank" rel="noopener" aria-label="Открыть сайт «Зерно»">
-            <span class="mock-monitor"><img src="img/works/zerno-d.webp" alt="Сайт «Зерно» на компьютере" width="1000" height="625"></span>
-            <span class="mock-stand" aria-hidden="true"></span>
-            <span class="mock-phone"><img src="img/works/zerno-m.webp" alt="Сайт «Зерно» на телефоне" width="390" height="844"></span>
-          </a>
-          <div class="work-info">
-            <p class="work-tags">Кофейня / меню / бронирование</p>
-            <h3>Зерно</h3>
-            <p class="work-tagline">Кофе, который обжарили вчера.</p>
-            <p class="work-desc">Меню с&nbsp;ценами, зерно недели и&nbsp;бронирование столика. Гость всё видит ещё до&nbsp;прихода.</p>
-            <ul class="work-feats"><li>Меню с&nbsp;ценами</li><li>Бронирование столика</li><li>Зерно недели</li></ul>
-            <a class="btn" href="https://vspider911.github.io/coffeDemo/" target="_blank" rel="noopener">Открыть сайт</a>
-            <span class="work-url">vspider911.github.io/coffeDemo</span>
-          </div>
-        </article>
-        <article class="work" style="--i:1">
-          <a class="mock" href="https://vspider911.github.io/texturademo/" target="_blank" rel="noopener" aria-label="Открыть сайт «Текстура»">
-            <span class="mock-monitor"><img src="img/works/tekstura-d.webp" alt="Сайт «Текстура» на компьютере" width="1000" height="625"></span>
-            <span class="mock-stand" aria-hidden="true"></span>
-            <span class="mock-phone"><img src="img/works/tekstura-m.webp" alt="Сайт «Текстура» на телефоне" width="390" height="844"></span>
-          </a>
-          <div class="work-info">
-            <p class="work-tags">Барбершоп / сайт с&nbsp;записью</p>
-            <h3>Текстура</h3>
-            <p class="work-tagline">Стрижка без звонков и&nbsp;ожидания.</p>
-            <p class="work-desc">Услуги, мастера и&nbsp;свободное время на&nbsp;одном экране. Клиент записывается в&nbsp;два касания.</p>
-            <ul class="work-feats"><li>Онлайн-запись</li><li>Услуги и&nbsp;цены</li><li>Адрес и&nbsp;маршрут</li></ul>
-            <a class="btn" href="https://vspider911.github.io/texturademo/" target="_blank" rel="noopener">Открыть сайт</a>
-            <span class="work-url">vspider911.github.io/texturademo</span>
-          </div>
-        </article>
-        <article class="work" style="--i:2">
-          <a class="mock" href="https://vspider911.github.io/autoservisdemo2/" target="_blank" rel="noopener" aria-label="Открыть сайт «ТехБокс»">
-            <span class="mock-monitor"><img src="img/works/techbox-d.webp" alt="Сайт «ТехБокс» на компьютере" width="1000" height="625"></span>
-            <span class="mock-stand" aria-hidden="true"></span>
-            <span class="mock-phone"><img src="img/works/techbox-m.webp" alt="Сайт «ТехБокс» на телефоне" width="390" height="844"></span>
-          </a>
-          <div class="work-info">
-            <p class="work-tags">Автосервис / запись / цены</p>
-            <h3>ТехБокс</h3>
-            <p class="work-tagline">Цена до&nbsp;начала работ.</p>
-            <p class="work-desc">Ремонт и&nbsp;ТО любых марок. Клиент видит стоимость заранее и&nbsp;записывается онлайн, без звонка.</p>
-            <ul class="work-feats"><li>Цены на&nbsp;работы</li><li>Онлайн-запись</li><li>Статус «открыто»</li></ul>
-            <a class="btn" href="https://vspider911.github.io/autoservisdemo2/" target="_blank" rel="noopener">Открыть сайт</a>
-            <span class="work-url">vspider911.github.io/autoservisdemo2</span>
-          </div>
-        </article>
-        <article class="work" style="--i:3">
-          <a class="mock" href="https://vspider911.github.io/beautydemo/" target="_blank" rel="noopener" aria-label="Открыть сайт «Фрэя»">
-            <span class="mock-monitor"><img src="img/works/freya-d.webp" alt="Сайт «Фрэя» на компьютере" width="1000" height="625"></span>
-            <span class="mock-stand" aria-hidden="true"></span>
-            <span class="mock-phone"><img src="img/works/freya-m.webp" alt="Сайт «Фрэя» на телефоне" width="390" height="844"></span>
-          </a>
-          <div class="work-info">
-            <p class="work-tags">Салон красоты / онлайн-запись</p>
-            <h3>Фрэя</h3>
-            <p class="work-tagline">Запись к&nbsp;мастеру меньше чем за&nbsp;минуту.</p>
-            <p class="work-desc">Стрижки, окрашивание, маникюр. Гостья выбирает услугу и&nbsp;свободное время, не&nbsp;дожидаясь ответа администратора.</p>
-            <ul class="work-feats"><li>Прайс с&nbsp;ценами</li><li>Запись на&nbsp;услуги</li><li>Рейтинг и&nbsp;часы работы</li></ul>
-            <a class="btn" href="https://vspider911.github.io/beautydemo/" target="_blank" rel="noopener">Открыть сайт</a>
-            <span class="work-url">vspider911.github.io/beautydemo</span>
-          </div>
-        </article>
+      <div class="reel" aria-label="Лента работ">
+        <span class="reel-perf reel-perf-t" aria-hidden="true"></span>
+        <span class="reel-perf reel-perf-b" aria-hidden="true"></span>
+        <div class="reel-track">
+          <article class="reel-card">
+            <a class="reel-shot" href="https://vspider911.github.io/coffeDemo/" target="_blank" rel="noopener" aria-label="Открыть сайт «Зерно»">
+              <img src="img/works/zerno-d.webp" alt="Сайт «Зерно» на компьютере" width="1000" height="625">
+              <span class="reel-phone"><img src="img/works/zerno-m.webp" alt="Сайт «Зерно» на телефоне" width="390" height="844"></span>
+              <span class="reel-num">01</span>
+            </a>
+            <div class="reel-info">
+              <p class="work-tags">Кофейня / меню / бронирование</p>
+              <div class="reel-row">
+                <h3>Зерно</h3>
+                <a class="btn btn-small" href="https://vspider911.github.io/coffeDemo/" target="_blank" rel="noopener">Открыть сайт<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+              </div>
+              <p class="work-tagline">Кофе, который обжарили вчера.</p>
+              <ul class="work-feats"><li>Меню с&nbsp;ценами</li><li>Бронирование</li><li>Зерно недели</li></ul>
+            </div>
+          </article>
+          <article class="reel-card">
+            <a class="reel-shot" href="https://vspider911.github.io/texturademo/" target="_blank" rel="noopener" aria-label="Открыть сайт «Текстура»">
+              <img src="img/works/tekstura-d.webp" alt="Сайт «Текстура» на компьютере" width="1000" height="625">
+              <span class="reel-phone"><img src="img/works/tekstura-m.webp" alt="Сайт «Текстура» на телефоне" width="390" height="844"></span>
+              <span class="reel-num">02</span>
+            </a>
+            <div class="reel-info">
+              <p class="work-tags">Барбершоп / сайт с&nbsp;записью</p>
+              <div class="reel-row">
+                <h3>Текстура</h3>
+                <a class="btn btn-small" href="https://vspider911.github.io/texturademo/" target="_blank" rel="noopener">Открыть сайт<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+              </div>
+              <p class="work-tagline">Стрижка без звонков и&nbsp;ожидания.</p>
+              <ul class="work-feats"><li>Онлайн-запись</li><li>Услуги и&nbsp;цены</li><li>Маршрут</li></ul>
+            </div>
+          </article>
+          <article class="reel-card">
+            <a class="reel-shot" href="https://vspider911.github.io/autoservisdemo2/" target="_blank" rel="noopener" aria-label="Открыть сайт «ТехБокс»">
+              <img src="img/works/techbox-d.webp" alt="Сайт «ТехБокс» на компьютере" width="1000" height="625">
+              <span class="reel-phone"><img src="img/works/techbox-m.webp" alt="Сайт «ТехБокс» на телефоне" width="390" height="844"></span>
+              <span class="reel-num">03</span>
+            </a>
+            <div class="reel-info">
+              <p class="work-tags">Автосервис / запись / цены</p>
+              <div class="reel-row">
+                <h3>ТехБокс</h3>
+                <a class="btn btn-small" href="https://vspider911.github.io/autoservisdemo2/" target="_blank" rel="noopener">Открыть сайт<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+              </div>
+              <p class="work-tagline">Цена до&nbsp;начала работ.</p>
+              <ul class="work-feats"><li>Цены на&nbsp;работы</li><li>Онлайн-запись</li><li>Открыто сейчас</li></ul>
+            </div>
+          </article>
+          <article class="reel-card">
+            <a class="reel-shot" href="https://vspider911.github.io/beautydemo/" target="_blank" rel="noopener" aria-label="Открыть сайт «Фрэя»">
+              <img src="img/works/freya-d.webp" alt="Сайт «Фрэя» на компьютере" width="1000" height="625">
+              <span class="reel-phone"><img src="img/works/freya-m.webp" alt="Сайт «Фрэя» на телефоне" width="390" height="844"></span>
+              <span class="reel-num">04</span>
+            </a>
+            <div class="reel-info">
+              <p class="work-tags">Салон красоты / онлайн-запись</p>
+              <div class="reel-row">
+                <h3>Фрэя</h3>
+                <a class="btn btn-small" href="https://vspider911.github.io/beautydemo/" target="_blank" rel="noopener">Открыть сайт<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+              </div>
+              <p class="work-tagline">Запись к&nbsp;мастеру меньше чем за&nbsp;минуту.</p>
+              <ul class="work-feats"><li>Прайс</li><li>Запись на&nbsp;услуги</li><li>Рейтинг</li></ul>
+            </div>
+          </article>
+        </div>
       </div>
 
       <div class="wrap works-nav">
