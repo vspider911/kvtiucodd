@@ -221,6 +221,24 @@ const CONFIG = {
   });
   matchMedia('(min-width: 1000px)').addEventListener?.('change', () => setMenu(false));
 
+  /* ---------- Переходы между сценами на весь экран ---------- */
+  // --en: 0 → 1, пока сцена въезжает снизу; --lv: 0 → 1, пока уезжает вверх
+  const shells = $$('.scene-pin, .services').map(sec => ({
+    sec, inner: sec.querySelector('.pin-inner, .services-sticky'), en: -1, lv: -1
+  }));
+  const updateShells = () => {
+    if (reduce) return;
+    const vh = innerHeight;
+    for (const s of shells) {
+      const r = s.sec.getBoundingClientRect();
+      if (r.top > vh * 1.2 || r.bottom < -vh * 0.2) continue;
+      const en = Math.round(clamp(1 - r.top / vh) * 1000) / 1000;
+      const lv = Math.round(clamp(1 - r.bottom / vh) * 1000) / 1000;
+      if (en !== s.en) { s.inner.style.setProperty('--en', en); s.en = en; }
+      if (lv !== s.lv) { s.inner.style.setProperty('--lv', lv); s.lv = lv; }
+    }
+  };
+
   /* ---------- Общий цикл ---------- */
   const root = document.documentElement;
   let ticking = false;
@@ -230,6 +248,7 @@ const CONFIG = {
     root.style.setProperty('--page', max > 0 ? (scrollY / max).toFixed(4) : 0);
     updateTop();
     updateStage();
+    updateShells();
     updateScrubs();
     updatePins();
     updateServices();
@@ -378,155 +397,6 @@ const CONFIG = {
     const end = () => { if (!drag) return; drag = false; if (!spinning) { spinning = true; requestAnimationFrame(inertia); } };
     v3d.addEventListener('pointerup', end); v3d.addEventListener('pointercancel', end);
   }
-
-  /* ---------- Песочница: детали сайта с физикой ---------- */
-  const initPlayground = () => {
-    const box = $('.play-box');
-    if (!box) return;
-    const toys = $$('.toy', box);
-    if (!window.Matter || reduce) { box.classList.add('static'); return; }
-    const { Engine, Bodies, Body, Composite, Constraint } = window.Matter;
-    const engine = Engine.create();
-    engine.gravity.y = 1.15;
-    engine.positionIterations = 10;
-    engine.velocityIterations = 8;
-    const world = engine.world;
-    let W = 0, H = 0, walls = [];
-    const items = toys.map(el => ({ el, w: 0, h: 0, body: null }));
-
-    const buildWalls = () => {
-      if (walls.length) Composite.remove(world, walls);
-      W = box.clientWidth; H = box.clientHeight;
-      const t = 400;
-      walls = [
-        Bodies.rectangle(W / 2, H + t / 2, W + t * 2, t, { isStatic: true, friction: 0.6 }),
-        Bodies.rectangle(-t / 2, H / 2 - H * 1.5, t, H * 5, { isStatic: true }),
-        Bodies.rectangle(W + t / 2, H / 2 - H * 1.5, t, H * 5, { isStatic: true })
-      ];
-      Composite.add(world, walls);
-    };
-    const makeBodies = () => {
-      items.forEach(it => {
-        if (it.body) Composite.remove(world, it.body);
-        it.w = it.el.offsetWidth; it.h = it.el.offsetHeight;
-        it.body = Bodies.rectangle(0, 0, it.w, it.h, {
-          chamfer: { radius: 4 }, restitution: 0.38, friction: 0.35, frictionAir: 0.014, density: 0.0018
-        });
-        Composite.add(world, it.body);
-      });
-    };
-    const dropAll = () => {
-      items.forEach((it, i) => {
-        Body.setPosition(it.body, { x: it.w / 2 + Math.random() * Math.max(1, W - it.w), y: -it.h - i * 60 - Math.random() * 60 });
-        Body.setVelocity(it.body, { x: 0, y: 0 });
-        Body.setAngle(it.body, (Math.random() - 0.5) * 1.2);
-        Body.setAngularVelocity(it.body, 0);
-      });
-    };
-    const sync = () => items.forEach(it => {
-      const { x, y } = it.body.position;
-      it.el.style.transform = `translate3d(${(x - it.w / 2).toFixed(1)}px,${(y - it.h / 2).toFixed(1)}px,0) rotate(${it.body.angle.toFixed(3)}rad)`;
-    });
-
-    buildWalls(); makeBodies(); dropAll(); sync();
-
-    // Детали не уходят за боковые стенки и в пол
-    const MAX_V = 24;
-    const keepInside = () => {
-      items.forEach(it => {
-        const b = it.body;
-        const v = b.velocity, sp = Math.hypot(v.x, v.y);
-        if (sp > MAX_V) Body.setVelocity(b, { x: v.x / sp * MAX_V, y: v.y / sp * MAX_V });
-        const bb = b.bounds;
-        let dx = 0, dy = 0;
-        if (bb.min.x < 0) dx = -bb.min.x;
-        else if (bb.max.x > W) dx = W - bb.max.x;
-        if (bb.max.y > H) dy = H - bb.max.y;
-        if (dx || dy) {
-          Body.setPosition(b, { x: b.position.x + dx, y: b.position.y + dy });
-          Body.setVelocity(b, {
-            x: dx ? -b.velocity.x * 0.3 : b.velocity.x,
-            y: dy ? Math.min(0, b.velocity.y) : b.velocity.y
-          });
-        }
-      });
-    };
-
-    let running = false, last = 0, acc = 0;
-    const STEP = 1000 / 60;
-    const tick = now => {
-      if (!running) return;
-      acc += Math.min(50, now - (last || now)); last = now;
-      let n = 0;
-      while (acc >= STEP && n < 4) { Engine.update(engine, STEP); keepInside(); acc -= STEP; n++; }
-      sync();
-      requestAnimationFrame(tick);
-    };
-    new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) {
-        if (!running) { running = true; last = 0; acc = 0; requestAnimationFrame(tick); }
-      } else if (running) {
-        running = false; dropAll(); sync();          // при возвращении детали упадут снова
-      }
-    }, { threshold: 0.2 }).observe(box);
-
-    // Перетаскивание
-    // Точка захвата не выходит за пределы поля (сверху можно подбросить)
-    const local = e => {
-      const r = box.getBoundingClientRect();
-      return { x: clamp(e.clientX - r.left, 6, W - 6), y: Math.min(e.clientY - r.top, H - 6) };
-    };
-    let drag = null;
-    items.forEach(it => {
-      it.el.addEventListener('pointerdown', e => {
-        e.preventDefault();
-        it.el.setPointerCapture(e.pointerId);
-        const p = local(e);
-        const c = Constraint.create({
-          pointA: p, bodyB: it.body,
-          pointB: { x: p.x - it.body.position.x, y: p.y - it.body.position.y },
-          stiffness: 0.22, damping: 0.08, length: 0
-        });
-        Composite.add(world, c);
-        drag = { it, c, start: p, t: performance.now(), moved: 0 };
-        it.el.classList.add('grabbed');
-      });
-      it.el.addEventListener('pointermove', e => {
-        if (!drag || drag.it !== it) return;
-        const p = local(e);
-        drag.moved = Math.max(drag.moved, Math.hypot(p.x - drag.start.x, p.y - drag.start.y));
-        drag.c.pointA = p;
-      });
-      const end = () => {
-        if (!drag || drag.it !== it) return;
-        Composite.remove(world, drag.c);
-        if (drag.moved < 6 && performance.now() - drag.t < 300) {
-          Body.setVelocity(it.body, { x: (Math.random() - 0.5) * 6, y: -13 - Math.random() * 4 });
-          Body.setAngularVelocity(it.body, (Math.random() - 0.5) * 0.5);
-        }
-        it.el.classList.remove('grabbed');
-        drag = null;
-      };
-      it.el.addEventListener('pointerup', end);
-      it.el.addEventListener('pointercancel', end);
-    });
-
-    // Встряхнуть
-    $('.play-shake').addEventListener('click', () => {
-      items.forEach(it => {
-        Body.setVelocity(it.body, { x: (Math.random() - 0.5) * 22, y: -10 - Math.random() * 14 });
-        Body.setAngularVelocity(it.body, (Math.random() - 0.5) * 0.6);
-      });
-    });
-
-    let lastW = innerWidth;
-    addEventListener('resize', () => {
-      if (innerWidth === lastW) return;
-      lastW = innerWidth;
-      setTimeout(() => { buildWalls(); makeBodies(); dropAll(); sync(); }, 150);
-    });
-  };
-  (document.fonts ? document.fonts.ready : Promise.resolve()).then(initPlayground);
 
   /* ---------- Заявка → Telegram-бот (/api/contact) ---------- */
   const form = $('.lead-form');

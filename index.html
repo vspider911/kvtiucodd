@@ -33,7 +33,7 @@
   <nav class="nav" aria-label="Разделы">
     <a href="#works" data-jump="1" data-spy="works">Работы</a>
     <a href="#services" data-spy="services">Услуги</a>
-    <a href="#play" data-spy="play">Песочница</a>
+    <a href="#before" data-spy="before">Было/стало</a>
     <a href="#inside" data-spy="inside">Что внутри</a>
     <a href="#lead" data-spy="contact">Заявка</a>
     <span class="nav-bar" aria-hidden="true"></span>
@@ -55,7 +55,7 @@
 <nav class="menu" id="menu" aria-label="Меню" inert>
   <a href="#works" data-jump="1" style="--i:0">Работы<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
   <a href="#services" style="--i:1">Услуги<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-  <a href="#play" style="--i:2">Песочница<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+  <a href="#before" style="--i:2">Было → стало<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
   <a href="#inside" style="--i:3">Что внутри<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
   <a href="#process" style="--i:4">Как это работает<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
   <a href="#lead" style="--i:5">Оставить заявку<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
@@ -205,29 +205,61 @@
     </div>
   </section>
 
-  <!-- Сцена 4. Песочница: детали сайта с физикой -->
-  <section class="play" id="play" aria-label="Песочница">
-    <div class="wrap play-head">
-      <div>
-        <h2 data-words>Потрогайте детали вашего сайта</h2>
-        <p data-fade>Хватайте, бросайте, складывайте. Всё это будет работать у&nbsp;вас.</p>
+  <!-- Сцена 4. Было → Стало: сайт переделывается на глазах -->
+  <section class="scene-pin ba" id="before" style="--len:2.4" aria-label="Было и стало">
+    <div class="pin-inner ba-inner">
+      <!-- БЫЛО: типичный старый сайт -->
+      <div class="ba-layer ba-old" aria-hidden="true">
+        <div class="old-page">
+          <div class="old-top"><b>АВТОСЕРВИС</b> &nbsp;|&nbsp; <u>Главная</u> | <u>О нас</u> | <u>Услуги</u> | <u>Контакты</u></div>
+          <div class="old-marq"><span>Добро пожаловать на наш сайт!!! Мы работаем для вас!!! Добро пожаловать на наш сайт!!!</span></div>
+          <div class="old-body">
+            <div class="old-col">
+              <h3>Наши услуги</h3>
+              <p>Ремонт автомобилей всех марок. Диагностика ходовой части. Шиномонтаж. Покраска. Кузовной ремонт. Замена масла и&nbsp;фильтров. Развал-схождение.</p>
+              <p><b>Цены уточняйте по&nbsp;телефону.</b></p>
+              <p>Работаем по&nbsp;будням, в&nbsp;выходные по&nbsp;договорённости. Телефон в&nbsp;разделе «Контакты».</p>
+            </div>
+            <div class="old-side">
+              <div class="old-box">НОВОСТИ<br><small>12.03.2016 — сайт открыт!</small></div>
+              <div class="old-box">Посетителей:<br><span class="old-counter">001287</span></div>
+            </div>
+          </div>
+          <p class="old-foot">Сайт в разработке. Лучше всего смотреть в Internet Explorer 1024×768.</p>
+        </div>
+        <span class="ba-note bad" style="--k:0;--x:56%;--y:44%">Цен нет&nbsp;— «уточняйте по&nbsp;телефону»</span>
+        <span class="ba-note bad" style="--k:1;--x:8%;--y:70%">Записаться нельзя, только звонить</span>
+        <span class="ba-note bad" style="--k:2;--x:44%;--y:84%">На телефоне всё мелкое</span>
       </div>
-      <button class="btn btn-ghost play-shake" type="button">Встряхнуть</button>
-    </div>
-    <div class="play-box" aria-hidden="true">
-      <div class="toy toy-btn">Записаться</div>
-      <div class="toy toy-chip"><b>4,9</b> ★★★★★</div>
-      <div class="toy toy-price">2 400 ₽</div>
-      <div class="toy toy-open"><i></i>Открыто</div>
-      <div class="toy toy-slot">17:00</div>
-      <div class="toy toy-icon"><svg viewBox="0 0 24 24"><path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3.5c0 1.2 1 1.2 1 2.5M12 3.5c0 1.2 1 1.2 1 2.5"/></svg></div>
-      <div class="toy toy-icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/></svg></div>
-      <div class="toy toy-icon"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
-      <div class="toy toy-cube">3D</div>
-      <div class="toy toy-wa">WhatsApp</div>
-      <div class="toy toy-route">Маршрут</div>
-      <div class="toy toy-star">★</div>
-      <p class="play-tip">Тяните мышкой или пальцем</p>
+
+      <!-- СТАЛО: новый сайт -->
+      <div class="ba-layer ba-new" aria-hidden="true">
+        <div class="new-page">
+          <div class="new-top"><b>ТехБокс<i></i></b><span class="new-open"><i></i>Открыто до 21:00</span></div>
+          <div class="new-hero">
+            <p class="new-rating">★ 4,9 &nbsp;·&nbsp; 312 оценок</p>
+            <h3>Ремонт без сюрпризов</h3>
+            <div class="new-prices">
+              <span>Диагностика <b>от 900 ₽</b></span>
+              <span>Замена масла <b>от 1 500 ₽</b></span>
+              <span>Шиномонтаж <b>от 2 400 ₽</b></span>
+            </div>
+            <div class="new-slots"><span class="x">10:00</span><span>11:30</span><span class="x">13:00</span><span class="on">15:30</span><span>17:00</span></div>
+            <span class="new-btn">Записаться на 15:30</span>
+          </div>
+        </div>
+        <span class="ba-note good n1" style="--k:0;--x:52%;--y:48%">Цены видны сразу</span>
+        <span class="ba-note good n2" style="--k:1;--x:10%;--y:86%">Запись в&nbsp;два касания</span>
+        <span class="ba-note good n3" style="--k:2;--x:58%;--y:20%">Видно, открыто&nbsp;ли сейчас</span>
+      </div>
+
+      <!-- граница «было | стало» -->
+      <div class="ba-line" aria-hidden="true"><span class="ba-chip ba-chip-l">Было</span><span class="ba-chip ba-chip-r">Стало</span></div>
+
+      <div class="ba-title">
+        <h2>Было → стало</h2>
+        <p>Листайте&nbsp;— сайт переделается на&nbsp;глазах</p>
+      </div>
     </div>
   </section>
 
@@ -414,7 +446,6 @@
   <a class="btn btn-ghost" data-tg href="#contact" aria-label="Написать в Telegram">Telegram</a>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
 <script src="script.js"></script>
 <script type="module" src="scene.js"></script>
 </body>
