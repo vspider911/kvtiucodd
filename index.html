@@ -8,14 +8,14 @@
 <meta name="theme-color" content="#0A0918">
 <meta property="og:title" content="kvtiucodd — сайты, после которых вам звонят">
 <meta property="og:description" content="Демо сайта с вашим названием за 2 дня — бесплатно.">
-<meta property="og:image" content="img/coffee.webp">
+<meta property="og:image" content="img/works/zerno-d.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="img/coffee.webp" type="image/webp">
-<link rel="preload" as="image" href="img/texture.webp" type="image/webp">
-<link rel="preload" as="image" href="img/techbox.webp" type="image/webp">
-<link rel="preload" as="image" href="img/freya.webp" type="image/webp">
+<link rel="preload" as="image" href="img/works/zerno-d.webp" type="image/webp">
+<link rel="preload" as="image" href="img/works/tekstura-d.webp" type="image/webp">
+<link rel="preload" as="image" href="img/works/techbox-d.webp" type="image/webp">
+<link rel="preload" as="image" href="img/works/freya-d.webp" type="image/webp">
 <link rel="stylesheet" href="style.css">
 <script type="importmap">
 { "imports": {
@@ -31,10 +31,10 @@
 <header class="top">
   <a class="logo" href="#top" aria-label="kvtiucodd — наверх">kvtiucodd<span class="logo-dot" aria-hidden="true"></span></a>
   <nav class="nav" aria-label="Разделы">
-    <a href="#works" data-jump="1" data-spy="works">Работы</a>
-    <a href="#services" data-spy="services">Услуги</a>
-    <a href="#before" data-spy="before">Было/стало</a>
+    <a href="#about" data-spy="about">Обо мне</a>
+    <a href="#works" data-spy="works">Работы</a>
     <a href="#inside" data-spy="inside">Что внутри</a>
+    <a href="#steps" data-spy="steps">Как заказать</a>
     <a href="#lead" data-spy="contact">Заявка</a>
     <span class="nav-bar" aria-hidden="true"></span>
   </nav>
@@ -53,217 +53,166 @@
 
 <div class="menu-backdrop" aria-hidden="true"></div>
 <nav class="menu" id="menu" aria-label="Меню" inert>
-  <a href="#works" data-jump="1" style="--i:0">Работы<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-  <a href="#services" style="--i:1">Услуги<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-  <a href="#before" style="--i:2">Было → стало<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-  <a href="#inside" style="--i:3">Что внутри<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-  <a href="#process" style="--i:4">Как это работает<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-  <a href="#lead" style="--i:5">Оставить заявку<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+  <a href="#about" style="--i:0">Обо мне<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+  <a href="#works" style="--i:1">Работы<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+  <a href="#inside" style="--i:2">Что внутри<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+  <a href="#steps" style="--i:3">Как заказать<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+  <a href="#lead" style="--i:4">Оставить заявку<svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
 </nav>
 
 <main id="top">
 
-  <!-- Сцена 1. 3D-телефон -->
-  <section class="stage" id="works" aria-label="Примеры сайтов">
-    <div class="stage-sticky">
+  <!-- 1. Первый экран: 3D-лента из скриншотов работ -->
+  <section class="hero" id="hero" aria-label="Первый экран">
+    <div class="hero-sticky">
       <canvas class="scene" aria-hidden="true"></canvas>
-      <img class="fallback" src="img/coffee.webp" alt="Сайт кофейни на экране телефона" width="900" height="1100">
+      <img class="fallback" src="img/works/zerno-d.webp" alt="Сайт кофейни «Зерно»" width="1000" height="625">
 
-      <div class="panels">
-        <div class="panel panel-hero" data-i="0">
-          <h1>Сайты, после которых вам звонят</h1>
-          <p class="lead">Делаю сайты для кофеен, барбершопов и&nbsp;автосервисов. Пришлите название&nbsp;— через два дня покажу демо с&nbsp;вашими ценами и&nbsp;отзывами. Бесплатно.</p>
-          <div class="actions">
-            <a class="btn" data-wa href="#contact">Получить демо</a>
-            <a class="btn btn-ghost" href="#services">Что я делаю</a>
-          </div>
-          <p class="drag-hint" aria-hidden="true"><i></i>Покрутите телефон</p>
-        </div>
-
-        <div class="panel" data-i="1">
-          <p class="kicker">Кофейня «Зерно»</p>
-          <h2>Гость решает зайти ещё на&nbsp;улице</h2>
-          <p>Меню с&nbsp;ценами, зерно недели и&nbsp;бронирование столика. Всё видно ещё до&nbsp;прихода.</p>
-          <a class="work-link" href="https://vspider911.github.io/coffeDemo/" target="_blank" rel="noopener">Открыть сайт<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg><span class="work-url">vspider911.github.io/coffeDemo</span></a>
-        </div>
-
-        <div class="panel" data-i="2">
-          <p class="kicker">Барбершоп «Текстура»</p>
-          <h2>Запись без звонков и&nbsp;переписки</h2>
-          <p>Мастера, услуги и&nbsp;свободное время. Клиент записывается в&nbsp;два касания.</p>
-          <a class="work-link" href="https://vspider911.github.io/texturademo/" target="_blank" rel="noopener">Открыть сайт<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg><span class="work-url">vspider911.github.io/texturademo</span></a>
-        </div>
-
-        <div class="panel" data-i="3">
-          <p class="kicker">Автосервис «ТехБокс»</p>
-          <h2>Сумма ремонта&nbsp;— до&nbsp;приезда</h2>
-          <p>Цена до&nbsp;начала работ и&nbsp;онлайн-запись. Не нужно звонить и&nbsp;спрашивать «сколько будет».</p>
-          <a class="work-link" href="https://vspider911.github.io/autoservisdemo2/" target="_blank" rel="noopener">Открыть сайт<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg><span class="work-url">vspider911.github.io/autoservisdemo2</span></a>
-        </div>
-
-        <div class="panel" data-i="4">
-          <p class="kicker">Салон красоты «Фрэя»</p>
-          <h2>Запись к&nbsp;мастеру без звонка</h2>
-          <p>Услуги, цены и&nbsp;онлайн-запись. Сайт выглядит так&nbsp;же ухоженно, как сам салон.</p>
-          <a class="work-link" href="https://vspider911.github.io/beautydemo/" target="_blank" rel="noopener">Открыть сайт<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg><span class="work-url">vspider911.github.io/beautydemo</span></a>
+      <div class="hero-copy">
+        <p class="hero-kicker">Сайты для местного бизнеса</p>
+        <h1>Делаю сайты, после которых вам звонят</h1>
+        <p class="hero-lead">Кофейни, барбершопы, автосервисы, салоны. Онлайн-запись, цены и&nbsp;заявки в&nbsp;Telegram. Пишу с&nbsp;нуля, без конструкторов.</p>
+        <div class="actions">
+          <a class="btn" href="#works">Смотреть работы</a>
+          <a class="btn btn-ghost hero-demo" href="#lead">Получить демо</a>
         </div>
       </div>
 
-      <div class="stage-progress" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <p class="hero-mark" aria-hidden="true">kvtiucodd</p>
+
+      <div class="hero-side">
+        <p>Москва: <b class="msk-clock">--:--</b> МСК</p>
+        <p>Отвечаю лично в&nbsp;Telegram</p>
+        <a class="btn btn-ghost" data-tg href="https://t.me/kvtiucodd">Написать в&nbsp;Telegram</a>
+      </div>
+
       <div class="scroll-hint" aria-hidden="true">Листайте</div>
     </div>
   </section>
 
-  <!-- Сцена 2. Фраза + бегущие строки -->
-  <section class="scene-pin manifesto" style="--len:1.9" aria-label="Зачем бизнесу сайт">
-    <div class="pin-inner">
-      <div class="band-tilt" aria-hidden="true">
-        <div class="band-row mf-row-1"><span>Кофейни</span><span>Барбершопы</span><span>Автосервисы</span><span>Салоны красоты</span><span>Шиномонтаж</span><span>Пекарни</span><span>Автомойки</span><span>Студии маникюра</span></div>
-      </div>
-      <div class="wrap">
-        <p class="mf-text" data-lit>Клиент выбирает за&nbsp;три секунды. Не&nbsp;видит цены и&nbsp;не&nbsp;может записаться&nbsp;— уходит к&nbsp;соседу.</p>
-      </div>
-      <div class="band-tilt band-tilt-2" aria-hidden="true">
-        <div class="band-row band-alt mf-row-2"><span>Онлайн-запись</span><span>Калькулятор</span><span>3D</span><span>Отзывы с Карт</span><span>Маршрут</span><span>WhatsApp</span><span>Цены</span><span>Открыто сейчас</span></div>
-      </div>
-    </div>
-  </section>
+  <!-- 2. Обо мне -->
+  <section class="scene-pin about" id="about" style="--len:2.3" aria-labelledby="about-title">
+    <div class="pin-inner about-inner">
+      <div class="wrap about-grid">
+        <ol class="about-points">
+          <li style="--k:0"><span class="num">01</span><div><h3>Сайт целиком</h3><p>Дизайн, тексты, формы и&nbsp;версия для телефона.</p></div></li>
+          <li style="--k:1"><span class="num">02</span><div><h3>Запись и&nbsp;цены</h3><p>Клиент выбирает время и&nbsp;видит стоимость без звонка.</p></div></li>
+          <li style="--k:2"><span class="num">03</span><div><h3>Заявки в&nbsp;Telegram</h3><p>Каждая заявка сразу приходит вам в&nbsp;мессенджер.</p></div></li>
+        </ol>
 
-  <!-- Сцена 3. Услуги: лента вбок -->
-  <section class="services" id="services" aria-label="Услуги">
-    <div class="services-sticky">
-      <div class="wrap services-head">
-        <h2 data-words>Что я делаю</h2>
-        <p data-fade>Всё, чтобы клиент нашёл вас, выбрал и&nbsp;записался. Без звонков.</p>
-      </div>
+        <div class="emblem" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
 
-      <div class="track">
-        <article class="svc spot">
-          <div class="svc-vis v-site" aria-hidden="true">
-            <div class="mini-win"><i></i><i></i><i></i><b class="mw-hero"></b><b class="mw-line"></b><b class="mw-line mw-s"></b><b class="mw-btn"></b></div>
-          </div>
-          <h3>Сайт под ваш бизнес</h3>
-          <p>Цены, адрес, часы работы и&nbsp;отзывы на&nbsp;одной странице. Открывается на&nbsp;любом телефоне.</p>
-        </article>
-
-        <article class="svc spot">
-          <div class="svc-vis v-book" aria-hidden="true">
-            <div class="vb-grid"><b class="x">10:00</b><b>11:00</b><b class="x">12:30</b><b>14:00</b><b>15:30</b><b class="on">17:00</b><b class="x">18:30</b><b>20:00</b></div>
-          </div>
-          <h3>Онлайн-запись</h3>
-          <p>Клиент сам выбирает день и&nbsp;время. Заявка приходит вам в&nbsp;Telegram.</p>
-        </article>
-
-        <article class="svc spot">
-          <div class="svc-vis v-calc" aria-hidden="true">
-            <div class="vc">
-              <div class="vc-row on"><s></s><b></b><em>1 500 ₽</em></div>
-              <div class="vc-row on"><s></s><b></b><em>900 ₽</em></div>
-              <div class="vc-row"><s></s><b></b><em>1 800 ₽</em></div>
-              <div class="vc-sum"><span>Итого</span><strong>2 400 ₽</strong></div>
-            </div>
-          </div>
-          <h3>Калькулятор стоимости</h3>
-          <p>Клиент отмечает работы и&nbsp;видит сумму. Меньше звонков с&nbsp;вопросом «сколько будет».</p>
-        </article>
-
-        <article class="svc spot">
-          <div class="svc-vis v-3d" aria-hidden="true" title="Потяните, чтобы покрутить">
-            <div class="cube"><b class="f1">3D</b><b class="f2">3D</b><b class="f3"></b><b class="f4"></b><b class="f5"></b><b class="f6"></b></div>
-          </div>
-          <h3>3D и&nbsp;анимации</h3>
-          <p>Как на&nbsp;этой странице. Такой сайт запоминают и&nbsp;пересылают друзьям.</p>
-        </article>
-
-        <article class="svc spot">
-          <div class="svc-vis v-map" aria-hidden="true">
-            <span class="road r1"></span><span class="road r2"></span>
-            <span class="pin"></span>
-            <span class="map-chip"><b>4,9 ★</b> 312 оценок</span>
-          </div>
-          <h3>Яндекс Карты и&nbsp;отзывы</h3>
-          <p>Рейтинг, отзывы и&nbsp;кнопка «Маршрут». Если точек несколько&nbsp;— покажу все.</p>
-        </article>
-
-        <article class="svc spot">
-          <div class="svc-vis v-launch" aria-hidden="true">
-            <div class="vl">
-              <div class="vl-url"><span>https://</span>ваше-название.ru</div>
-              <div class="vl-bar"><i></i></div>
-              <div class="vl-ok">Сайт опубликован</div>
-            </div>
-          </div>
-          <h3>Запуск и&nbsp;поддержка</h3>
-          <p>Домен, хостинг и&nbsp;правки цен беру на&nbsp;себя. Вам не&nbsp;нужно ни&nbsp;в&nbsp;чём разбираться.</p>
-        </article>
-      </div>
-
-      <div class="wrap svc-foot" aria-hidden="true">
-        <span class="svc-count">1 / 6</span>
-        <span class="svc-bar"><i></i></span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Сцена 4. Было → Стало: сайт переделывается на глазах -->
-  <section class="scene-pin ba" id="before" style="--len:2.4" aria-label="Было и стало">
-    <div class="pin-inner ba-inner">
-      <!-- БЫЛО: типичный старый сайт -->
-      <div class="ba-layer ba-old" aria-hidden="true">
-        <div class="old-page">
-          <div class="old-top"><b>АВТОСЕРВИС</b> &nbsp;|&nbsp; <u>Главная</u> | <u>О нас</u> | <u>Услуги</u> | <u>Контакты</u></div>
-          <div class="old-marq"><span>Добро пожаловать на наш сайт!!! Мы работаем для вас!!! Добро пожаловать на наш сайт!!!</span></div>
-          <div class="old-body">
-            <div class="old-col">
-              <h3>Наши услуги</h3>
-              <p>Ремонт автомобилей всех марок. Диагностика ходовой части. Шиномонтаж. Покраска. Кузовной ремонт. Замена масла и&nbsp;фильтров. Развал-схождение.</p>
-              <p><b>Цены уточняйте по&nbsp;телефону.</b></p>
-              <p>Работаем по&nbsp;будням, в&nbsp;выходные по&nbsp;договорённости. Телефон в&nbsp;разделе «Контакты».</p>
-            </div>
-            <div class="old-side">
-              <div class="old-box">НОВОСТИ<br><small>12.03.2016 — сайт открыт!</small></div>
-              <div class="old-box">Посетителей:<br><span class="old-counter">001287</span></div>
-            </div>
-          </div>
-          <p class="old-foot">Сайт в разработке. Лучше всего смотреть в Internet Explorer 1024×768.</p>
+        <div class="about-text">
+          <h2 id="about-title">Всё делаю сам</h2>
+          <p>Делаю сайты для местного бизнеса: кофейни, барбершопы, автосервисы, салоны красоты. Дизайн, тексты, код и&nbsp;запуск беру на&nbsp;себя.</p>
+          <p>Менеджеров нет: вы пишете напрямую тому, кто делает ваш сайт. Сначала разбираюсь, что должен сделать посетитель, и&nbsp;только потом занимаюсь красотой. Каждый экран проверяю на&nbsp;телефоне.</p>
+          <dl class="about-stats">
+            <div><dt>4</dt><dd>работы ниже</dd></div>
+            <div><dt>2 дня</dt><dd>до первого демо</dd></div>
+            <div><dt>1</dt><dd>человек на&nbsp;связи</dd></div>
+          </dl>
         </div>
-        <span class="ba-note bad" style="--k:0;--x:56%;--y:44%">Цен нет&nbsp;— «уточняйте по&nbsp;телефону»</span>
-        <span class="ba-note bad" style="--k:1;--x:8%;--y:70%">Записаться нельзя, только звонить</span>
-        <span class="ba-note bad" style="--k:2;--x:44%;--y:84%">На телефоне всё мелкое</span>
       </div>
 
-      <!-- СТАЛО: новый сайт -->
-      <div class="ba-layer ba-new" aria-hidden="true">
-        <div class="new-page">
-          <div class="new-top"><b>ТехБокс<i></i></b><span class="new-open"><i></i>Открыто до 21:00</span></div>
-          <div class="new-hero">
-            <p class="new-rating">★ 4,9 &nbsp;·&nbsp; 312 оценок</p>
-            <h3>Ремонт без сюрпризов</h3>
-            <div class="new-prices">
-              <span>Диагностика <b>от 900 ₽</b></span>
-              <span>Замена масла <b>от 1 500 ₽</b></span>
-              <span>Шиномонтаж <b>от 2 400 ₽</b></span>
-            </div>
-            <div class="new-slots"><span class="x">10:00</span><span>11:30</span><span class="x">13:00</span><span class="on">15:30</span><span>17:00</span></div>
-            <span class="new-btn">Записаться на 15:30</span>
+      <a class="float-card fc-1" href="https://vspider911.github.io/coffeDemo/" target="_blank" rel="noopener">
+        <img src="img/works/zerno-d.webp" alt="Сайт кофейни «Зерно»" width="1000" height="625">
+        <span>Зерно, кофейня <b>Открыть</b></span>
+      </a>
+      <a class="float-card fc-2" href="https://vspider911.github.io/autoservisdemo2/" target="_blank" rel="noopener">
+        <img src="img/works/techbox-d.webp" alt="Сайт автосервиса «ТехБокс»" width="1000" height="625">
+        <span>ТехБокс, автосервис <b>Открыть</b></span>
+      </a>
+
+      <p class="giant" aria-hidden="true"><span>Дизайн</span><em>и</em><span>код</span><em>и</em><span>запуск</span></p>
+    </div>
+  </section>
+
+  <!-- 3. Работы: листалка -->
+  <section class="scene-pin works" id="works" style="--len:4.6" aria-labelledby="works-title">
+    <div class="pin-inner works-inner">
+      <div class="wall" aria-hidden="true"><img src="img/works/tekstura-d.webp" alt="" width="1000" height="625"><img src="img/works/freya-d.webp" alt="" width="1000" height="625"><img src="img/works/zerno-d.webp" alt="" width="1000" height="625"><img src="img/works/techbox-d.webp" alt="" width="1000" height="625"><img src="img/works/freya-d.webp" alt="" width="1000" height="625"><img src="img/works/techbox-d.webp" alt="" width="1000" height="625"><img src="img/works/tekstura-d.webp" alt="" width="1000" height="625"><img src="img/works/zerno-d.webp" alt="" width="1000" height="625"><img src="img/works/zerno-d.webp" alt="" width="1000" height="625"><img src="img/works/tekstura-d.webp" alt="" width="1000" height="625"><img src="img/works/techbox-d.webp" alt="" width="1000" height="625"><img src="img/works/freya-d.webp" alt="" width="1000" height="625"></div>
+
+      <div class="wrap works-head">
+        <h2 id="works-title" data-words>Работы.</h2>
+        <p data-fade>Четыре сайта, сделанных с&nbsp;нуля. В&nbsp;каждом можно записаться или посмотреть цены.</p>
+      </div>
+
+      <div class="wrap work-list">
+        <article class="work" style="--i:0">
+          <a class="mock" href="https://vspider911.github.io/coffeDemo/" target="_blank" rel="noopener" aria-label="Открыть сайт «Зерно»">
+            <span class="mock-monitor"><img src="img/works/zerno-d.webp" alt="Сайт «Зерно» на компьютере" width="1000" height="625"></span>
+            <span class="mock-stand" aria-hidden="true"></span>
+            <span class="mock-phone"><img src="img/works/zerno-m.webp" alt="Сайт «Зерно» на телефоне" width="390" height="844"></span>
+          </a>
+          <div class="work-info">
+            <p class="work-tags">Кофейня / меню / бронирование</p>
+            <h3>Зерно</h3>
+            <p class="work-tagline">Кофе, который обжарили вчера.</p>
+            <p class="work-desc">Меню с&nbsp;ценами, зерно недели и&nbsp;бронирование столика. Гость всё видит ещё до&nbsp;прихода.</p>
+            <ul class="work-feats"><li>Меню с&nbsp;ценами</li><li>Бронирование столика</li><li>Зерно недели</li></ul>
+            <a class="btn" href="https://vspider911.github.io/coffeDemo/" target="_blank" rel="noopener">Открыть сайт</a>
+            <span class="work-url">vspider911.github.io/coffeDemo</span>
           </div>
-        </div>
-        <span class="ba-note good n1" style="--k:0;--x:52%;--y:48%">Цены видны сразу</span>
-        <span class="ba-note good n2" style="--k:1;--x:10%;--y:86%">Запись в&nbsp;два касания</span>
-        <span class="ba-note good n3" style="--k:2;--x:58%;--y:20%">Видно, открыто&nbsp;ли сейчас</span>
+        </article>
+        <article class="work" style="--i:1">
+          <a class="mock" href="https://vspider911.github.io/texturademo/" target="_blank" rel="noopener" aria-label="Открыть сайт «Текстура»">
+            <span class="mock-monitor"><img src="img/works/tekstura-d.webp" alt="Сайт «Текстура» на компьютере" width="1000" height="625"></span>
+            <span class="mock-stand" aria-hidden="true"></span>
+            <span class="mock-phone"><img src="img/works/tekstura-m.webp" alt="Сайт «Текстура» на телефоне" width="390" height="844"></span>
+          </a>
+          <div class="work-info">
+            <p class="work-tags">Барбершоп / сайт с&nbsp;записью</p>
+            <h3>Текстура</h3>
+            <p class="work-tagline">Стрижка без звонков и&nbsp;ожидания.</p>
+            <p class="work-desc">Услуги, мастера и&nbsp;свободное время на&nbsp;одном экране. Клиент записывается в&nbsp;два касания.</p>
+            <ul class="work-feats"><li>Онлайн-запись</li><li>Услуги и&nbsp;цены</li><li>Адрес и&nbsp;маршрут</li></ul>
+            <a class="btn" href="https://vspider911.github.io/texturademo/" target="_blank" rel="noopener">Открыть сайт</a>
+            <span class="work-url">vspider911.github.io/texturademo</span>
+          </div>
+        </article>
+        <article class="work" style="--i:2">
+          <a class="mock" href="https://vspider911.github.io/autoservisdemo2/" target="_blank" rel="noopener" aria-label="Открыть сайт «ТехБокс»">
+            <span class="mock-monitor"><img src="img/works/techbox-d.webp" alt="Сайт «ТехБокс» на компьютере" width="1000" height="625"></span>
+            <span class="mock-stand" aria-hidden="true"></span>
+            <span class="mock-phone"><img src="img/works/techbox-m.webp" alt="Сайт «ТехБокс» на телефоне" width="390" height="844"></span>
+          </a>
+          <div class="work-info">
+            <p class="work-tags">Автосервис / запись / цены</p>
+            <h3>ТехБокс</h3>
+            <p class="work-tagline">Цена до&nbsp;начала работ.</p>
+            <p class="work-desc">Ремонт и&nbsp;ТО любых марок. Клиент видит стоимость заранее и&nbsp;записывается онлайн, без звонка.</p>
+            <ul class="work-feats"><li>Цены на&nbsp;работы</li><li>Онлайн-запись</li><li>Статус «открыто»</li></ul>
+            <a class="btn" href="https://vspider911.github.io/autoservisdemo2/" target="_blank" rel="noopener">Открыть сайт</a>
+            <span class="work-url">vspider911.github.io/autoservisdemo2</span>
+          </div>
+        </article>
+        <article class="work" style="--i:3">
+          <a class="mock" href="https://vspider911.github.io/beautydemo/" target="_blank" rel="noopener" aria-label="Открыть сайт «Фрэя»">
+            <span class="mock-monitor"><img src="img/works/freya-d.webp" alt="Сайт «Фрэя» на компьютере" width="1000" height="625"></span>
+            <span class="mock-stand" aria-hidden="true"></span>
+            <span class="mock-phone"><img src="img/works/freya-m.webp" alt="Сайт «Фрэя» на телефоне" width="390" height="844"></span>
+          </a>
+          <div class="work-info">
+            <p class="work-tags">Салон красоты / онлайн-запись</p>
+            <h3>Фрэя</h3>
+            <p class="work-tagline">Запись к&nbsp;мастеру меньше чем за&nbsp;минуту.</p>
+            <p class="work-desc">Стрижки, окрашивание, маникюр. Гостья выбирает услугу и&nbsp;свободное время, не&nbsp;дожидаясь ответа администратора.</p>
+            <ul class="work-feats"><li>Прайс с&nbsp;ценами</li><li>Запись на&nbsp;услуги</li><li>Рейтинг и&nbsp;часы работы</li></ul>
+            <a class="btn" href="https://vspider911.github.io/beautydemo/" target="_blank" rel="noopener">Открыть сайт</a>
+            <span class="work-url">vspider911.github.io/beautydemo</span>
+          </div>
+        </article>
       </div>
 
-      <!-- граница «было | стало» -->
-      <div class="ba-line" aria-hidden="true"><span class="ba-chip ba-chip-l">Было</span><span class="ba-chip ba-chip-r">Стало</span></div>
-
-      <div class="ba-title">
-        <h2>Было → стало</h2>
-        <p>Листайте&nbsp;— сайт переделается на&nbsp;глазах</p>
+      <div class="wrap works-nav">
+        <button class="round-btn works-prev" type="button" aria-label="Предыдущая работа"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+        <p class="works-count" aria-live="polite"><b>01</b><span class="works-bar"><i></i></span><span>04</span></p>
+        <button class="round-btn works-next" type="button" aria-label="Следующая работа"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
       </div>
     </div>
   </section>
 
-  <!-- Сцена 5. Живые демо стопкой -->
+  <!-- 4. Живые демо стопкой -->
   <section class="scene-pin inside" id="inside" style="--len:3">
     <div class="pin-inner">
       <div class="wrap inside-grid">
@@ -323,52 +272,37 @@
     </div>
   </section>
 
-  <!-- Сцена 6. Как работаем -->
-  <section class="scene-pin process" id="process" style="--len:1.8">
-    <div class="pin-inner">
-      <div class="wrap">
-        <div class="section-head">
-          <h2 data-words>Как это работает</h2>
+  <!-- 5. Как заказать -->
+  <section class="steps-sec" id="steps" aria-labelledby="steps-title">
+    <div class="wrap">
+      <p class="eyebrow" data-fade>Три шага</p>
+      <h2 id="steps-title" data-words>Как заказать.</h2>
+      <ol class="rows">
+        <li data-fade data-end=".78"><span class="num">01</span><h3>Вы присылаете название</h3><p>Или ссылку на&nbsp;карточку в&nbsp;Яндекс Картах. Больше ничего не&nbsp;нужно.</p></li>
+        <li data-fade data-end=".78"><span class="num">02</span><h3>Через два дня — демо</h3><p>Живая страница по&nbsp;ссылке, а&nbsp;не&nbsp;картинки: с&nbsp;вашим адресом, часами работы, ценами и&nbsp;отзывами. Смотрите бесплатно.</p></li>
+        <li data-fade data-end=".78"><span class="num">03</span><h3>Нравится — запускаем</h3><p>Подключаю домен и&nbsp;заявки, показываю, как менять цены. Не&nbsp;нравится&nbsp;— просто расходимся.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 6. Финал в рамке -->
+  <section class="scene-pin final" id="contact" style="--len:1.7" aria-labelledby="final-title">
+    <div class="pin-inner final-inner">
+      <span class="fl fl-t" aria-hidden="true"></span><span class="fl fl-b" aria-hidden="true"></span>
+      <span class="fl fl-l" aria-hidden="true"></span><span class="fl fl-r" aria-hidden="true"></span>
+      <div class="final-copy">
+        <h2 id="final-title">Нет сайта? Пришлите название.</h2>
+        <p>Через два дня покажу демо с&nbsp;вашими ценами и&nbsp;отзывами. Посмотреть ни&nbsp;к&nbsp;чему не&nbsp;обязывает.</p>
+        <div class="actions">
+          <a class="btn" href="#lead">Оставить заявку</a>
+          <a class="btn btn-ghost" data-tg href="#">Написать в&nbsp;Telegram</a>
         </div>
-        <ol class="steps">
-          <li style="--k:0">
-            <span class="step-n">1</span>
-            <h3>Вы присылаете название</h3>
-            <p>Или ссылку на&nbsp;карточку в&nbsp;Яндекс Картах. Больше ничего не&nbsp;нужно.</p>
-          </li>
-          <li style="--k:.33">
-            <span class="step-n">2</span>
-            <h3>Через два дня&nbsp;— демо</h3>
-            <p>С&nbsp;вашими адресом, часами работы, ценами и&nbsp;отзывами. Смотрите бесплатно.</p>
-          </li>
-          <li style="--k:.66">
-            <span class="step-n">3</span>
-            <h3>Нравится&nbsp;— запускаем</h3>
-            <p>Подключаю домен, размещаю сайт, показываю, как менять цены. Не&nbsp;нравится&nbsp;— просто расходимся.</p>
-          </li>
-        </ol>
+        <p class="final-mark" aria-hidden="true">kvtiucodd</p>
       </div>
     </div>
   </section>
 
-  <!-- Сцена 7. Финал -->
-  <section class="scene-pin cta" id="contact" style="--len:1.6">
-    <div class="pin-inner">
-      <div class="wrap">
-        <h2 class="fill">Пришлите название&nbsp;— покажу ваш сайт через два дня</h2>
-        <div class="cta-after">
-          <p>Посмотреть ни&nbsp;к&nbsp;чему не&nbsp;обязывает.</p>
-          <div class="actions">
-            <a class="btn" href="#lead">Оставить заявку</a>
-            <a class="btn btn-ghost" data-wa href="#">WhatsApp</a>
-            <a class="btn btn-ghost" data-tg href="#">Telegram</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Сцена 8. Заявка → Telegram-бот -->
+  <!-- 7. Заявка → Telegram-бот -->
   <section class="apply" id="lead" aria-labelledby="lead-title">
     <div class="wrap lead-grid">
       <div class="lead-text">

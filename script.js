@@ -38,7 +38,6 @@ const CONFIG = {
     el.style.setProperty('--n', words.length);
   };
   $$('[data-words]').forEach(h => { splitWords(h, 'wi', true); if (!h.dataset.end) h.dataset.end = '.62'; });
-  $$('[data-lit]').forEach(p => splitWords(p, 'lw', false));
 
   /* ---------- Появление заголовков при подъезде к экрану ---------- */
   const scrubEls = $$('[data-words], [data-fade]').map(el => ({
@@ -59,33 +58,51 @@ const CONFIG = {
     }
   };
 
-  /* ---------- Сцена 1: тексты рядом с 3D-телефоном ---------- */
-  const stage = $('.stage');
-  const panels = $$('.panel', stage);
-  const ticks = $$('.stage-progress span', stage);
-  const hint = $('.scroll-hint', stage);
-  const BOUNDS = [0, 0.2, 0.4, 0.6, 0.8];   // совпадает с scene.js
-  let current = -1;
   const sectionProgress = el => {
     const r = el.getBoundingClientRect();
     const total = el.offsetHeight - innerHeight;
     return total > 0 ? clamp(-r.top / total) : 0;
   };
-  const updateStage = () => {
-    const p = sectionProgress(stage);
-    let i = 0;
-    BOUNDS.forEach((b, k) => { if (p >= b) i = k; });
-    if (i !== current) {
-      panels.forEach((el, k) => {
-        el.classList.toggle('is-active', k === i);
-        el.classList.toggle('is-past', k < i);
-        el.setAttribute('aria-hidden', k !== i);
-      });
-      ticks.forEach((t, k) => t.classList.toggle('on', k <= i));
-      current = i;
-    }
-    if (hint) hint.classList.toggle('gone', p > 0.02);
+
+  /* ---------- Первый экран: текст уходит по мере прокрутки ---------- */
+  const hero = $('.hero');
+  const updateHero = () => {
+    hero.style.setProperty('--hero', reduce ? 0 : sectionProgress(hero).toFixed(3));
   };
+
+  /* ---------- Работы: листалка, привязанная к прокрутке ---------- */
+  const worksSec = $('#works');
+  const workEls = $$('.work', worksSec);
+  const worksNum = $('.works-count b', worksSec), worksBar = $('.works-bar i', worksSec);
+  const worksPrev = $('.works-prev', worksSec), worksNext = $('.works-next', worksSec);
+  const W_FROM = 0.05, W_TO = 0.93;          // участок сцены, на котором листаются работы
+  let workActive = -1;
+  const updateWorks = () => {
+    const n = workEls.length;
+    const p = reduce ? 0 : sectionProgress(worksSec);
+    const x = clamp((p - W_FROM) / (W_TO - W_FROM)) * (n - 1);     // 0 … n−1, дробное
+    const active = Math.round(x);
+    workEls.forEach((el, k) => {
+      const d = reduce ? 0 : clamp(k - x, -1, 1);
+      el.style.setProperty('--d', d.toFixed(3));
+      el.style.setProperty('--a', Math.abs(d).toFixed(3));
+    });
+    if (active !== workActive) {
+      workActive = active;
+      workEls.forEach((el, k) => { el.classList.toggle('is-active', reduce || k === active); el.inert = !reduce && k !== active; });
+      worksNum.textContent = String(active + 1).padStart(2, '0');
+      worksPrev.disabled = active === 0; worksNext.disabled = active === n - 1;
+    }
+    worksBar.style.setProperty('--wp', ((x + 1) / n).toFixed(3));
+  };
+  const goWork = k => {
+    const n = workEls.length; k = clamp(k, 0, n - 1);
+    const total = worksSec.offsetHeight - innerHeight;
+    const p = W_FROM + (k / (n - 1)) * (W_TO - W_FROM);
+    scrollTo({ top: worksSec.offsetTop + p * total, behavior: reduce ? 'auto' : 'smooth' });
+  };
+  worksPrev.addEventListener('click', () => goWork(workActive - 1));
+  worksNext.addEventListener('click', () => goWork(workActive + 1));
 
   /* ---------- Закреплённые сцены: прогресс → --sp ---------- */
   const pins = $$('.scene-pin').map(el => ({
@@ -138,38 +155,6 @@ const CONFIG = {
     }
   };
 
-  /* ---------- Сцена 3: услуги — вертикальный скролл → лента вбок ---------- */
-  const svc = $('.services');
-  const track = $('.track', svc);
-  const svcCards = $$('.svc', svc);
-  const svcCount = $('.svc-count', svc);
-  let overflow = 0;
-  const layoutServices = () => {
-    if (reduce) { svc.style.height = ''; svc.style.setProperty('--sp', .2); return; }
-    track.style.transform = 'none';
-    overflow = Math.max(0, track.scrollWidth - svc.clientWidth);
-    svc.style.height = `${innerHeight + overflow * 1.05}px`;
-  };
-  const updateServices = () => {
-    if (reduce) return;
-    const r = svc.getBoundingClientRect();
-    if (r.bottom < -100 || r.top > innerHeight + 100) return;
-    const p = sectionProgress(svc);
-    track.style.transform = `translate3d(${(-p * overflow).toFixed(1)}px,0,0)`;
-    svc.style.setProperty('--sp', p.toFixed(4));
-    const cx = innerWidth / 2;
-    svcCards.forEach(c => {
-      const cr = c.getBoundingClientRect();
-      const off = (cr.left + cr.width / 2 - cx) / innerWidth;
-      const a = Math.min(1, Math.abs(off));
-      c.style.setProperty('--ry', `${clamp(off * -38, -32, 32).toFixed(2)}deg`);
-      c.style.setProperty('--sc', (1 - a * 0.1).toFixed(3));
-      c.style.setProperty('--op', (1 - a * 0.45).toFixed(3));
-      c.style.setProperty('--cp', clamp(1.25 - a * 2.4).toFixed(3));
-    });
-    svcCount.textContent = `${Math.min(svcCards.length, Math.round(p * (svcCards.length - 1)) + 1)} / ${svcCards.length}`;
-  };
-
   /* ---------- Шапка: стекло после прокрутки и бегунок под текущим разделом ---------- */
   const topBar = $('.top'), navEl = $('.nav'), navBar = $('.nav-bar');
   const spyLinks = $$('.nav a[data-spy]');
@@ -186,7 +171,6 @@ const CONFIG = {
     const mid = innerHeight * 0.45;
     let idx = -1;
     spySections.forEach((s, i) => { if (s && s.getBoundingClientRect().top <= mid) idx = i; });
-    if (idx === 0 && sectionProgress(stage) < BOUNDS[1] - 0.02) idx = -1;   // первый экран — ещё не «Работы»
     if (idx !== spyActive) {
       spyActive = idx;
       spyLinks.forEach((a, i) => {
@@ -223,8 +207,8 @@ const CONFIG = {
 
   /* ---------- Переходы между сценами на весь экран ---------- */
   // --en: 0 → 1, пока сцена въезжает снизу; --lv: 0 → 1, пока уезжает вверх
-  const shells = $$('.scene-pin, .services').map(sec => ({
-    sec, inner: sec.querySelector('.pin-inner, .services-sticky'), en: -1, lv: -1
+  const shells = $$('.scene-pin').map(sec => ({
+    sec, inner: sec.querySelector('.pin-inner'), en: -1, lv: -1
   }));
   const updateShells = () => {
     if (reduce) return;
@@ -247,17 +231,16 @@ const CONFIG = {
     const max = root.scrollHeight - innerHeight;
     root.style.setProperty('--page', max > 0 ? (scrollY / max).toFixed(4) : 0);
     updateTop();
-    updateStage();
+    updateHero();
     updateShells();
     updateScrubs();
     updatePins();
-    updateServices();
+    updateWorks();
   };
   const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
   addEventListener('scroll', onScroll, { passive: true });
 
   const relayout = () => {
-    layoutServices();
     pins.forEach(p => { p.last = -1; });
     update();
     moveBar(hoverLink || spyLinks[spyActive]);   // ширина ссылок меняется после загрузки шрифта
@@ -267,13 +250,6 @@ const CONFIG = {
   relayout();
   document.fonts && document.fonts.ready.then(relayout);
   addEventListener('load', relayout);
-
-  // «Работы» — сразу к первому примеру
-  $$('[data-jump]').forEach(a => a.addEventListener('click', e => {
-    e.preventDefault();
-    const y = stage.offsetTop + (BOUNDS[+a.dataset.jump] + 0.03) * (stage.offsetHeight - innerHeight);
-    scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
-  }));
 
   // Если 3D не загрузилось — показать картинку
   setTimeout(() => {
@@ -345,57 +321,6 @@ const CONFIG = {
       }
       if (!running) { running = true; requestAnimationFrame(tick); }
     }, { passive: true });
-  }
-
-  /* ---------- Слова фразы разбегаются от курсора ---------- */
-  const mf = $('.manifesto');
-  const mWords = $$('.mf-text .lw');
-  if (fine && !reduce && mf) {
-    let mx = -1e4, my = -1e4, active = false;
-    const st = mWords.map(() => ({ x: 0, y: 0 }));
-    const mLoop = () => {
-      let moving = false;
-      mWords.forEach((w, i) => {
-        const r = w.getBoundingClientRect();
-        const cx = r.left + r.width / 2 - st[i].x, cy = r.top + r.height / 2 - st[i].y;
-        const dx = cx - mx, dy = cy - my, d = Math.hypot(dx, dy) || 1;
-        const f = Math.max(0, 1 - d / 190);
-        const tx = dx / d * f * 38, ty = dy / d * f * 38;
-        st[i].x += (tx - st[i].x) * 0.2; st[i].y += (ty - st[i].y) * 0.2;
-        if (Math.abs(tx - st[i].x) > 0.1 || Math.abs(ty - st[i].y) > 0.1) moving = true;
-        w.style.setProperty('--rx', `${st[i].x.toFixed(1)}px`);
-        w.style.setProperty('--ry', `${st[i].y.toFixed(1)}px`);
-      });
-      if (moving || mx > -1e4) requestAnimationFrame(mLoop); else active = false;
-    };
-    mf.addEventListener('pointermove', e => {
-      mx = e.clientX; my = e.clientY;
-      if (!active) { active = true; requestAnimationFrame(mLoop); }
-    });
-    mf.addEventListener('pointerleave', () => { mx = -1e4; my = -1e4; });
-  }
-  mWords.forEach(w => w.addEventListener('click', () => {
-    w.classList.remove('bounce'); void w.offsetWidth; w.classList.add('bounce');
-  }));
-
-  /* ---------- Кубик «3D» можно крутить ---------- */
-  const v3d = $('.v-3d'), cube = $('.cube');
-  if (v3d && cube && !reduce) {
-    let dx = 0, dy = 0, vx = 0, vy = 0, drag = false, lx = 0, ly = 0, spinning = false;
-    const apply = () => { cube.style.setProperty('--dx', `${dx.toFixed(1)}deg`); cube.style.setProperty('--dy', `${dy.toFixed(1)}deg`); };
-    const inertia = () => {
-      if (drag) { spinning = false; return; }
-      dx += vx; dy += vy; vx *= 0.94; vy *= 0.94; apply();
-      if (Math.abs(vx) + Math.abs(vy) > 0.05) requestAnimationFrame(inertia); else spinning = false;
-    };
-    v3d.addEventListener('pointerdown', e => { drag = true; lx = e.clientX; ly = e.clientY; vx = vy = 0; v3d.setPointerCapture(e.pointerId); });
-    v3d.addEventListener('pointermove', e => {
-      if (!drag) return;
-      const mx = e.clientX - lx, my = e.clientY - ly; lx = e.clientX; ly = e.clientY;
-      vx = mx * 0.9; vy = -my * 0.9; dx += vx; dy += vy; apply();
-    });
-    const end = () => { if (!drag) return; drag = false; if (!spinning) { spinning = true; requestAnimationFrame(inertia); } };
-    v3d.addEventListener('pointerup', end); v3d.addEventListener('pointercancel', end);
   }
 
   /* ---------- Заявка → Telegram-бот (/api/contact) ---------- */
@@ -517,7 +442,9 @@ const CONFIG = {
       const online = now.getHours() >= FROM && now.getHours() < TO;
       hud.classList.toggle('is-off', !online);
       $('.hud-text', hud).textContent = online ? 'На связи' : 'Отвечу утром';
-      $('.hud-clock b', hud).textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+      const hhmm = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+      $('.hud-clock b', hud).textContent = hhmm;
+      $$('.msk-clock').forEach(el => { el.textContent = hhmm; });
     };
     renderHud();
     setInterval(renderHud, 20000);
